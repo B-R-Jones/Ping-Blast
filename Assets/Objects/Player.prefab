@@ -270,12 +270,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementMultiplier: 5
+  shiftSpeed: 0
   fireSignal: 0
   _CheckKeys: 0
   enemy: {fileID: 0}
   ghost: {fileID: 0}
   shot: {fileID: 2070925945577930812, guid: faedbc372d8efee45a420875c2c4a03c, type: 3}
   manager: {fileID: 0}
+  shotNumber: 0
+  rapidFireOn: 0
+  spreadShotOn: 0
+  shotTimer: 1
 --- !u!61 &7572562721612609983
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -316,5 +316,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dd80181a8650b24fb8c9d3e274966e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fireChance: 25
+  fireChance: 33
+  _fireChance: 0
   shot: {fileID: 2070925945577930812, guid: faedbc372d8efee45a420875c2c4a03c, type: 3}
+  fireChanceTimer: 0
+  shotTimer: 0
+  manager: {fileID: 0}
+  shotNumber: 1
+  rapidFireOn: 0
+  spreadShotOn: 0
+  rapidFireTimer: 0
+  spreadShotTimer: 0

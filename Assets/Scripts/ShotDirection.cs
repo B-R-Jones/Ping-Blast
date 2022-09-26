@@ -54,8 +54,18 @@ public class ShotDirection : MonoBehaviour
 
     void FixedUpdate()
     {
-        timer -= Time.deltaTime;
-        if (timer < 0) { Destroy(gameObject); }
+
+        if (manager.GetComponent<ManagerScript>().gameOn)
+        {
+            timer -= Time.deltaTime;
+            if (timer < 0) { Destroy(gameObject); }
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+
     }
 
     void Launch()
@@ -70,18 +80,34 @@ public class ShotDirection : MonoBehaviour
         Debug.Log("Hit!");
         Debug.Log($"PORE: {pORe}");
 
-        if (collision.gameObject.tag == "Enemy")
+        if (collision.gameObject.CompareTag("Enemy"))
         {
             manager.GetComponent<ManagerScript>().enemyAlive = false;
+            manager.GetComponent<ManagerScript>().score += 50 * manager.GetComponent<ManagerScript>().scoreMultiplier;
             manager.GetComponent<ManagerScript>().spawn = collision.transform;
+            manager.GetComponent<ManagerScript>().scoreMultiplier = 1;
+            Destroy(collision.gameObject);
+            Destroy(gameObject);
         }
 
-        if (collision.gameObject.tag == "Player")
+        if (collision.gameObject.CompareTag("Player"))
         {
             manager.GetComponent<ManagerScript>().playerAlive = false;
+            Destroy(collision.gameObject);
+            Destroy(gameObject);
         }
 
-        Destroy(collision.gameObject);
-        Destroy(gameObject);
+        if (collision.gameObject.CompareTag("Bullet") && pORe == "p")
+        {
+            manager.GetComponent<ManagerScript>().scoreMultiplier += 1;
+            Debug.Log($"B-HIT: {manager.GetComponent<ManagerScript>().scoreMultiplier}");
+            Destroy(collision.gameObject);
+            Destroy(gameObject);
+        }
+
+        if (collision.gameObject.CompareTag("Bullet") && pORe == "e")
+        {
+            Debug.Log("OPE");
+        }
     }
 }

@@ -8,7 +8,7 @@ public class ShotDirection : MonoBehaviour
     private GameObject field;
     private GameObject player;
     private GameObject enemy;
-    private GameObject manager;
+    public GameObject manager;
     private float flightSpeed;
     private float timer;
     public string pORe;
@@ -21,6 +21,9 @@ public class ShotDirection : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         enemy = GameObject.FindGameObjectWithTag("Enemy");
         manager = GameObject.FindGameObjectWithTag("GameController");
+
+        if (manager == null)
+            Debug.LogError("SomeVariable has not been assigned.", this);
 
         foreach (Collider2D col in field.GetComponents<Collider2D>())
         {
@@ -80,7 +83,7 @@ public class ShotDirection : MonoBehaviour
         Debug.Log("Hit!");
         Debug.Log($"PORE: {pORe}");
 
-        if (collision.gameObject.CompareTag("Enemy"))
+        if (collision.gameObject.CompareTag("Enemy") && pORe == "p")
         {
             manager.GetComponent<ManagerScript>().enemyAlive = false;
             manager.GetComponent<ManagerScript>().score += 50 * manager.GetComponent<ManagerScript>().scoreMultiplier;
@@ -90,7 +93,7 @@ public class ShotDirection : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player") && pORe == "e")
         {
             manager.GetComponent<ManagerScript>().playerAlive = false;
             Destroy(collision.gameObject);
@@ -108,6 +111,14 @@ public class ShotDirection : MonoBehaviour
         if (collision.gameObject.CompareTag("Bullet") && pORe == "e")
         {
             Debug.Log("OPE");
+        }
+
+        if (collision.gameObject.CompareTag("Powerup"))
+        {
+            if (pORe == "p") { manager.GetComponent<ManagerScript>().scoreMultiplier += 3; }
+            if (pORe == "e") { manager.GetComponent<ManagerScript>().score -= 2; }
+            Destroy(collision.gameObject);
+            Destroy(gameObject);
         }
     }
 }

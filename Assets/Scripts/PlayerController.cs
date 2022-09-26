@@ -30,8 +30,8 @@ public class PlayerController : MonoBehaviour
     //[HideInInspector]
     public bool rapidFireOn;
     public bool spreadShotOn;
-    private float rapidFireTimer;
-    private float spreadShotTimer;
+    public float rapidFireTimer;
+    public float spreadShotTimer;
 
     private float enemyMoveTimer;
 

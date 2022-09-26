@@ -36,6 +36,7 @@ public class ManagerScript : MonoBehaviour
     public TextMeshPro multiplierBoard;
     public TextMeshPro nextHitBoard;
     private int scoreFrames;
+    public int lastScore;
 
 
 
@@ -118,7 +119,23 @@ public class ManagerScript : MonoBehaviour
 
                 //spawn.transform.position.Set(Random.Range(-4.5f, 4.5f), Random.Range(0.5f, 9.5f), 1.0f);
                 Debug.Log($"SPA2: [{spawn}]");
-                newEnemy = Instantiate(enemy, spawn);
+
+
+
+                newEnemy = Instantiate(enemy);
+                Transform spawnEnemy;
+                float spawnEnemyAtX;
+                float spawnEnemyAtY;
+
+                //find our spawn location
+
+                spawnEnemyAtX = Random.Range(-4.5f, 4.5f);
+                spawnEnemyAtY = Random.Range(0.5f, 9.5f);
+
+                spawnEnemy = newEnemy.transform;
+
+                spawnEnemy.SetPositionAndRotation(new Vector3(spawnEnemyAtX, spawnEnemyAtY, 1.0f), Quaternion.identity);
+
                 player.GetComponent<PlayerController>().enemy = newEnemy.GetComponent<Rigidbody2D>();
                 enemyAlive = true;
                 respawnEnemyTimer = 3.0f;
@@ -147,18 +164,20 @@ public class ManagerScript : MonoBehaviour
         {
             playerSpawn = player.transform;
         }
-        camPosMenu = new(-30.0f, 0.0f, -20.0f);
-        camPosField = new(0.0f, 0.0f, -20.0f);
+        camPosMenu = new(-40.0f, 0.0f, -1.0f);
+        camPosField = new(0.0f, 0.0f, -1.0f);
         enemyAlive = true;
         moveList = new Dictionary<int, Vector2>();
         respawnEnemyTimer = 3.0f;
+        lastScore = score;
         score = 0;
         scoreFrames = 0;
         scoreMultiplier = 1;
         scoreboard.text = score.ToString();
-        spawnPowerupTimer = 5.0f;
+        spawnPowerupTimer = 10.0f;
         gameOn = false;
         moveCamera = false;
+
     }
 
     private void PowerupCheck()
@@ -195,8 +214,7 @@ public class ManagerScript : MonoBehaviour
 
                 if (spawnPowerupPickupCode > 50.0)
                 {
-                    //spawnPowerupPickup = RapidfirePowerup;
-                    spawnPowerupPickup = SpreadshotPowerup;
+                    spawnPowerupPickup = RapidfirePowerup;
                 }
                 else
                 {

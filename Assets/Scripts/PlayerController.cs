@@ -18,25 +18,25 @@ public class PlayerController : MonoBehaviour
     private ManagerScript managerScript;
     [HideInInspector] public Rigidbody2D enemy; // Accessed by ManagerScript
     [HideInInspector] public Rigidbody2D ghost; // Accessed by ManagerScript
-    public GameObject shot; // Leave open for easy swapping of shots in dev mode
 
-    // Vector positions of the ghost and enemy
+    // Vector positions of the ghost
     private Vector2 ghostPos;
     private Vector2 newGhostPos;
-    private Vector2 enemyPos;
+    //private Vector2 enemyPos;
 
     // Enemy movement dictionary, steppers, etc.
     private Dictionary<int, Vector2> enemySteps;
-    private int stepCounter;
+    //private int stepCounter;
     private int stepIndex;
-    private float enemyMoveTimer;
-    private bool enemyDetected;
+    //private float enemyMoveTimer;
+    //private bool enemyDetected;
 
     // Weapon attributes and modifiers
-    [HideInInspector] public int shotNumber; // Accessed by RFManager/SPManager
-    [HideInInspector] public float shotTimer; // Accessed by RFManager/SPManager
-    [HideInInspector] public bool rapidFireOn; // Accessed by RFManager/SPManager
-    [HideInInspector] public bool spreadShotOn; // Accessed by RFManager/SPManager
+    public GameObject shot; // Leave open for easy swapping of shots in dev mode
+    [HideInInspector] public int shotNumber; // Accessed by SPManager
+    [HideInInspector] public float shotTimer; // Accessed by RFManager
+    [HideInInspector] public bool rapidFireOn; // Accessed by RFManager
+    [HideInInspector] public bool spreadShotOn; // Accessed by SPManager
     private float rapidFireTimer;
     private float spreadShotTimer;
 
@@ -57,13 +57,8 @@ public class PlayerController : MonoBehaviour
             DetectFire();
             SetGhost();
 
-            enemyMoveTimer -= Time.deltaTime;
+            //enemyMoveTimer -= Time.deltaTime;
             shotTimer -= Time.deltaTime;
-
-            if (enemyMoveTimer < 0 && enemyDetected)
-            {
-                MoveSquareEnemy();
-            }
         }
     }
 
@@ -82,12 +77,12 @@ public class PlayerController : MonoBehaviour
 
         //Enemy and enemy movement
         enemy = GameObject.FindGameObjectWithTag("Enemy").gameObject.GetComponent<Rigidbody2D>();
-        enemyDetected = true;
+        //enemyDetected = true;
         enemySteps = new Dictionary<int, Vector2>();
         enemySteps = managerScript.moveList;
-        stepCounter = managerScript.moveCounter;
+        //stepCounter = managerScript.moveCounter;
         stepIndex = managerScript.moveIndex;
-        enemyMoveTimer = Random.Range(0f, 3f);
+        //enemyMoveTimer = Random.Range(0f, 3f);
 
         // Powerup and firing settings
         rapidFireOn = false;
@@ -101,22 +96,22 @@ public class PlayerController : MonoBehaviour
         shiftSpeed = 0.0f;
     }
 
-    private void DetectEnemy()
-    {
-        if (GameObject.FindGameObjectWithTag("Enemy") != null)
-        {
-            enemy = GameObject.FindGameObjectWithTag("Enemy").gameObject.GetComponent<Rigidbody2D>();
-            if (enemy != null) { enemyDetected = true; }
-        }
-        else
-        {
-            enemyDetected = false;
-        }
-    }
+    //private void DetectEnemy()
+    //{
+    //    //if (GameObject.FindGameObjectWithTag("Enemy") != null)
+    //    //{
+    //    //    enemy = GameObject.FindGameObjectWithTag("Enemy").gameObject.GetComponent<Rigidbody2D>();
+    //    //    //if (enemy != null) { enemyDetected = true; }
+    //    //}
+    //    //else
+    //    //{
+    //    //    enemyDetected = false;
+    //    //}
+    //}
 
     private void SetPositions()
     {
-        if (enemyDetected) { enemyPos = enemy.position; }
+        //if (enemyDetected) { enemyPos = enemy.position; }
         newPos = GetMovement(myPos);
     }
 
@@ -137,39 +132,39 @@ public class PlayerController : MonoBehaviour
         GetComponent<Rigidbody2D>().velocity = -1 * movementMultiplier * shiftSpeed * direction;
     }
 
-    // This can be moved to the enemy controller (FireControl) in the future
-    private void MoveSquareEnemy()
-    {
-        if (enemySteps.ContainsKey(stepCounter) && enemySteps.Count >= 1)
-        {
-            if (CheckForPowerup() != null)
-            {
-                if (CheckForPowerup().position.y >= 0.5f)
-                {
-                    enemy.position = Vector2.MoveTowards(enemyPos, CheckForPowerup().position, movementMultiplier * Time.deltaTime);
-                }
-            }
-            else
-            {
-                enemy.position = Vector2.MoveTowards(enemyPos, enemySteps[stepCounter], movementMultiplier * Time.deltaTime);
-            }
-        }
-        stepCounter++;
-        enemySteps.Remove(stepCounter - 1);
-    }
+    //// This can be moved to the enemy controller (FireControl) in the future
+    //private void MoveSquareEnemy()
+    //{
+    //    if (enemySteps.ContainsKey(stepCounter) && enemySteps.Count >= 1)
+    //    {
+    //        if (CheckForPowerup() != null)
+    //        {
+    //            if (CheckForPowerup().position.y >= 0.5f)
+    //            {
+    //                enemy.position = Vector2.MoveTowards(enemyPos, CheckForPowerup().position, movementMultiplier * Time.deltaTime);
+    //            }
+    //        }
+    //        else
+    //        {
+    //            enemy.position = Vector2.MoveTowards(enemyPos, enemySteps[stepCounter], movementMultiplier * Time.deltaTime);
+    //        }
+    //    }
+    //    stepCounter++;
+    //    enemySteps.Remove(stepCounter - 1);
+    //}
 
-    // This can be moved to the enemy controller (FireControl) in the future
-    private Transform CheckForPowerup()
-    {
-        if (GameObject.FindGameObjectWithTag("Powerup") != null)
-        {
-            return GameObject.FindGameObjectWithTag("Powerup").transform;
-        }
-        else
-        {
-            return null;
-        }
-    }
+    //// This can be moved to the enemy controller (FireControl) in the future
+    //private Transform CheckForPowerup()
+    //{
+    //    if (GameObject.FindGameObjectWithTag("Powerup") != null)
+    //    {
+    //        return GameObject.FindGameObjectWithTag("Powerup").transform;
+    //    }
+    //    else
+    //    {
+    //        return null;
+    //    }
+    //}
 
     private void DetectFire()
     {

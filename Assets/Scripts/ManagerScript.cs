@@ -5,59 +5,48 @@ using UnityEngine;
 
 public class ManagerScript : MonoBehaviour
 {
-    // Game entities and attributes
-    private GameObject player;
-    private Transform playerSpawn;
-    private GameObject enemy; // Investigate if needed after player_controller branch
-    private Rigidbody2D ghost;
+    // Enemy state, movement dictionary, steppers, respawn timer and shot
+    private bool enemyAlive;
+    [HideInInspector] public Dictionary<int, Vector2> moveList; // Accessed by PlayerController/FireControl
+    [HideInInspector] public int moveCounter; // Accessed by FireControl
+    [HideInInspector] public int moveIndex; // Accessed by PlayerController/FireControl
+    private float respawnEnemyTimer;
+    public float respawnEnemySeconds; // Leave open to easily change in the future
     public GameObject shot; // Leave open for easy swapping of ammo in the future
 
-    [HideInInspector]
-    public Transform spawn;
+    // Player entity, state, spawn and ghost
+    private GameObject player;
+    [HideInInspector] public bool playerAlive;
+    private Transform playerSpawn;
+    private Rigidbody2D ghost;
 
-    [HideInInspector]
-    public int stepCount;
-
-    [HideInInspector]
-    public Dictionary<int, Vector2> moveList;
-    [HideInInspector]
-    public int moveCounter;
-    [HideInInspector]
-    public int moveIndex;
-
-    public bool enemyAlive;
-    public float respawnEnemyTimer;
-    public bool playerAlive;
-
-    [HideInInspector]
-    public int score;
-    [HideInInspector]
-    public int scoreMultiplier;
-    public TextMeshPro scoreboard;
-    public TextMeshPro multiplierBoard;
-    public TextMeshPro nextHitBoard;
+    // Scoreboard entities and attributes
+    private TextMeshPro scoreboard;
+    private TextMeshPro multiplierBoard;
+    private TextMeshPro nextHitBoard;
+    [HideInInspector] public int score; // Accessed by RFManager/SPManager
+    [HideInInspector] public int scoreMultiplier; // Accessed by RFManager/SPManager
     private int scoreFrames;
-    public int lastScore;
+    private int lastScore;
 
+    // Powerup entities and spawning numbers and attributes
+    public GameObject RapidfirePowerup; // Leave open for easy swapping of powerups in the future
+    public GameObject SpreadshotPowerup; // Leave open for easy swapping of powerups in the future
+    private float spawnPowerupTimer;
+    private float spawnPowerupChance;
+    private float spawnPowerupLocationCode;
+    private float spawnPowerupPickupCode;
+    private float spawnPowerupLocationX;
+    private float spawnPowerupLocationY;
 
+    // Camera, state and attributes
+    public Camera mainCamera; // Leave open for easy swapping of cameras in the future
+    private bool moveCamera;
+    private Vector3 camPosMenu;
+    private Vector3 camPosField;
 
-    public float spawnPowerupTimer;
-    public float spawnPowerupChance;
-    public float spawnPowerupLocationCode;
-    public float spawnPowerupPickupCode;
-    public float spawnPowerupLocationX;
-    public float spawnPowerupLocationY;
-
-    public GameObject RapidfirePowerup;
-    public GameObject SpreadshotPowerup;
-
-    public bool gameOn;
-    public bool moveCamera;
-    public Vector3 camPosMenu;
-    public Vector3 camPosField;
-
-    public Camera mainCamera;
-
+    // Game state
+    public bool gameOn; // Accessed by multiple scripts to check game state
 
     // Start is called before the first frame update
     void Start()
@@ -73,17 +62,12 @@ public class ManagerScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //if (moveCamera) { MoveCameraTo(0); } else { MoveCameraTo(1); }
         if (gameOn)
         {
             MoveCameraTo(0);
-
             FrameScore();
-
             PowerupCheck();
-
             EnemyCheck();
-
             PlayerCheck();
         }
         else
@@ -104,6 +88,7 @@ public class ManagerScript : MonoBehaviour
         {
             gameOn = false;
             MoveCameraTo(1);
+            ClearField();
             SetPlayField();
         }
     }
@@ -112,25 +97,7 @@ public class ManagerScript : MonoBehaviour
     {
         if (!enemyAlive)
         {
-            if (respawnEnemyTimer < 0)
-            {
-                GameObject newEnemy = Instantiate(enemy);
-
-                // Move to our spawn location
-                float spawnEnemyAtX = Random.Range(-4.5f, 4.5f);
-                float spawnEnemyAtY = Random.Range(0.5f, 9.5f);
-                Vector3 spawnLocation = new Vector3(spawnEnemyAtX, spawnEnemyAtY, 1.0f);
-                newEnemy.transform.SetPositionAndRotation(spawnLocation, Quaternion.identity);
-
-                // Set new enemy for player
-                player.GetComponent<PlayerController>().enemy = newEnemy.GetComponent<Rigidbody2D>();
-                enemyAlive = true;
-                respawnEnemyTimer = 3.0f;
-            }
-            else
-            {
-                respawnEnemyTimer -= Time.deltaTime;
-            }
+            if (respawnEnemyTimer < 0) { RespawnEnemy(1); } else { DecayTimer(respawnEnemyTimer); }
         }
     }
 
@@ -177,9 +144,17 @@ public class ManagerScript : MonoBehaviour
 
     private void SetEnemyStateAndMoveList()
     {
-        enemyAlive = true;
+        RespawnEnemy(0);
         moveList = new Dictionary<int, Vector2>();
-        respawnEnemyTimer = 3.0f;
+        respawnEnemyTimer = respawnEnemySeconds < 0.5f ? 3.0f : respawnEnemySeconds;
+    }
+
+    private void SetGameStateAndScoreboard()
+    {
+        SetScoreAttributes();
+        gameOn = false;
+        scoreboard.text = score.ToString();
+        spawnPowerupTimer = 10.0f;
     }
 
     private void SetScoreAttributes()
@@ -190,11 +165,28 @@ public class ManagerScript : MonoBehaviour
         scoreMultiplier = 1;
     }
 
-    private void SetGameStateAndScoreboard()
+    private void RespawnEnemy(int mode)
     {
-        gameOn = false;
-        scoreboard.text = score.ToString();
-        spawnPowerupTimer = 10.0f;
+        GameObject newEnemy = Instantiate(enemy);
+        float spawnEnemyAtX;
+        float spawnEnemyAtY;
+        switch (mode)
+        {
+            case 0:
+                // fresh start
+                spawnEnemyAtX = 0.0f;
+                spawnEnemyAtY = 8.0f;
+                break;
+            case 1:
+                // enemy has been killed and needs respawning
+                spawnEnemyAtX = Random.Range(-4.5f, 4.5f);
+                spawnEnemyAtY = Random.Range(0.5f, 9.5f);
+                break;
+        }
+        Vector3 spawnLocation = new Vector3(spawnEnemyAtX, spawnEnemyAtY, 1.0f);
+        newEnemy.transform.SetPositionAndRotation(spawnLocation, Quaternion.identity);
+        enemyAlive = true;
+        respawnEnemyTimer = respawnEnemySeconds;
     }
 
     private void PowerupCheck()
@@ -236,18 +228,15 @@ public class ManagerScript : MonoBehaviour
                     spawnPowerupPickup = SpreadshotPowerup;
                 }
 
-
                 GameObject spawnedPickup = Instantiate(spawnPowerupPickup);
                 spawnedPickup.transform.SetPositionAndRotation(new(spawnPowerupLocationX, spawnPowerupLocationY, 1.0f), Quaternion.identity);
 
                 spawnPowerupTimer = 5.0f;
-
             }
-
         }
         else
         {
-            spawnPowerupTimer -= Time.deltaTime;
+            DecayTimer(spawnPowerupTimer);
         }
     }
 
@@ -275,5 +264,17 @@ public class ManagerScript : MonoBehaviour
     {
         moveCamera = true;
         gameOn = true;
+    }
+
+    private void DecayTimer(float timer)
+    {
+        timer -= Time.deltaTime;
+    }
+
+    private void ClearField()
+    {
+        Destroy(GameObject.FindObjectWithTag("Enemy"));
+        Destroy(GameObject.FindObjectWithTag("Powerup"));
+        Destroy(GameObject.FindObjectWithTag("Bullet"));
     }
 }

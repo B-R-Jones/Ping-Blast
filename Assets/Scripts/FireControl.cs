@@ -59,7 +59,7 @@ public class FireControl : MonoBehaviour
         coolDownTimer = 2.0f;
 
         // Movement settings
-        moveTimer = _Random.Range(0.5f, 3.0f);
+        moveTimer = Random.Range(0.5f, 3.0f);
         mySteps = new Dictionary<int, Vector2>();
         mySteps = managerScript.moveList;
 
@@ -106,6 +106,7 @@ public class FireControl : MonoBehaviour
     {
         if (mySteps.ContainsKey(stepCounter) && mySteps.Count >= 1)
         {
+            Vector2 myPos = GetComponent<Rigidbody2D>().transform.position;
             Vector2 direction;
             powerup = CheckForPowerup();
             if (powerup != null)
@@ -113,13 +114,13 @@ public class FireControl : MonoBehaviour
                 if (powerup.position.y >= 0.5f)
                 {
                     direction = new Vector2(myPos.x - powerup.position.x, myPos.y - powerup.position.y).normalized;
-                    GetComponent<Rigidbody2D>().velocity = -1 * movementMultiplier * direction;
+                    GetComponent<Rigidbody2D>().velocity = -1 * 5 * direction;
                 }
             }
             else
             {
                 direction = new Vector2(myPos.x - mySteps[stepCounter].x, myPos.y - mySteps[stepCounter].y).normalized;
-                GetComponent<Rigidbody2D>().velocity = -1 * movementMultiplier * direction;
+                GetComponent<Rigidbody2D>().velocity = -1 * 5 * direction;
             }
         }
         stepCounter++;

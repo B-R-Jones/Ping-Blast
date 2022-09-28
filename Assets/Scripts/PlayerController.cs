@@ -22,14 +22,10 @@ public class PlayerController : MonoBehaviour
     // Vector positions of the ghost
     private Vector2 ghostPos;
     private Vector2 newGhostPos;
-    //private Vector2 enemyPos;
 
     // Enemy movement dictionary, steppers, etc.
     private Dictionary<int, Vector2> enemySteps;
-    //private int stepCounter;
     private int stepIndex;
-    //private float enemyMoveTimer;
-    //private bool enemyDetected;
 
     // Weapon attributes and modifiers
     public GameObject shot; // Leave open for easy swapping of shots in dev mode
@@ -51,13 +47,10 @@ public class PlayerController : MonoBehaviour
     {
         if (managerScript.gameOn)
         {
-            DetectEnemy();
             SetPositions();
             MoveSquare();
             DetectFire();
             SetGhost();
-
-            //enemyMoveTimer -= Time.deltaTime;
             shotTimer -= Time.deltaTime;
         }
     }
@@ -77,12 +70,9 @@ public class PlayerController : MonoBehaviour
 
         //Enemy and enemy movement
         enemy = GameObject.FindGameObjectWithTag("Enemy").gameObject.GetComponent<Rigidbody2D>();
-        enemyDetected = true;
         enemySteps = managerScript.moveList;
         enemySteps = new Dictionary<int, Vector2>();
-        stepCounter = managerScript.moveCounter;
         stepIndex = managerScript.moveIndex;
-        enemyMoveTimer = Random.Range(0f, 3f);
 
         // Powerup and firing settings
         rapidFireOn = false;
@@ -96,19 +86,6 @@ public class PlayerController : MonoBehaviour
         if (movementMultiplier == 0) { movementMultiplier = 5; }
         shiftSpeed = 0.0f;
     }
-
-    //private void DetectEnemy()
-    //{
-    //    //if (GameObject.FindGameObjectWithTag("Enemy") != null)
-    //    //{
-    //    //    enemy = GameObject.FindGameObjectWithTag("Enemy").gameObject.GetComponent<Rigidbody2D>();
-    //    //    //if (enemy != null) { enemyDetected = true; }
-    //    //}
-    //    //else
-    //    //{
-    //    //    enemyDetected = false;
-    //    //}
-    //}
 
     private void SetPositions()
     {
@@ -132,40 +109,6 @@ public class PlayerController : MonoBehaviour
         Vector2 direction = new Vector2(myPos.x - newPos.x, myPos.y - newPos.y).normalized;
         GetComponent<Rigidbody2D>().velocity = -1 * movementMultiplier * shiftSpeed * direction;
     }
-
-    //// This can be moved to the enemy controller (FireControl) in the future
-    //private void MoveSquareEnemy()
-    //{
-    //    if (enemySteps.ContainsKey(stepCounter) && enemySteps.Count >= 1)
-    //    {
-    //        if (CheckForPowerup() != null)
-    //        {
-    //            if (CheckForPowerup().position.y >= 0.5f)
-    //            {
-    //                enemy.position = Vector2.MoveTowards(enemyPos, CheckForPowerup().position, movementMultiplier * Time.deltaTime);
-    //            }
-    //        }
-    //        else
-    //        {
-    //            enemy.position = Vector2.MoveTowards(enemyPos, enemySteps[stepCounter], movementMultiplier * Time.deltaTime);
-    //        }
-    //    }
-    //    stepCounter++;
-    //    enemySteps.Remove(stepCounter - 1);
-    //}
-
-    //// This can be moved to the enemy controller (FireControl) in the future
-    //private Transform CheckForPowerup()
-    //{
-    //    if (GameObject.FindGameObjectWithTag("Powerup") != null)
-    //    {
-    //        return GameObject.FindGameObjectWithTag("Powerup").transform;
-    //    }
-    //    else
-    //    {
-    //        return null;
-    //    }
-    //}
 
     private void DetectFire()
     {

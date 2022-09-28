@@ -101,6 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destination: {x: 0, y: 0}
+  manager: {fileID: 6819262912181590749, guid: 00e049a362e5c5e4ea3b04d40b66a454, type: 3}
   pORe: 
 --- !u!61 &5942283414895809063
 BoxCollider2D:

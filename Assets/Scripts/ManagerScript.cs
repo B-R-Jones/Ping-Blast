@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class ManagerScript : MonoBehaviour
 {
-    public GameObject player;
-    public Transform playerSpawn;
-    public GameObject enemy;
-    public Rigidbody2D ghost;
-    public GameObject shot;
+    // Game entities and attributes
+    private GameObject player;
+    private Transform playerSpawn;
+    private GameObject enemy; // Investigate if needed after player_controller branch
+    private Rigidbody2D ghost;
+    public GameObject shot; // Leave open for easy swapping of ammo in the future
 
     [HideInInspector]
     public Transform spawn;
@@ -113,29 +114,15 @@ public class ManagerScript : MonoBehaviour
         {
             if (respawnEnemyTimer < 0)
             {
-                GameObject newEnemy;
+                GameObject newEnemy = Instantiate(enemy);
 
-                Debug.Log($"SPA1: [{spawn}]");
+                // Move to our spawn location
+                float spawnEnemyAtX = Random.Range(-4.5f, 4.5f);
+                float spawnEnemyAtY = Random.Range(0.5f, 9.5f);
+                Vector3 spawnLocation = new Vector3(spawnEnemyAtX, spawnEnemyAtY, 1.0f);
+                newEnemy.transform.SetPositionAndRotation(spawnLocation, Quaternion.identity);
 
-                //spawn.transform.position.Set(Random.Range(-4.5f, 4.5f), Random.Range(0.5f, 9.5f), 1.0f);
-                Debug.Log($"SPA2: [{spawn}]");
-
-
-
-                newEnemy = Instantiate(enemy);
-                Transform spawnEnemy;
-                float spawnEnemyAtX;
-                float spawnEnemyAtY;
-
-                //find our spawn location
-
-                spawnEnemyAtX = Random.Range(-4.5f, 4.5f);
-                spawnEnemyAtY = Random.Range(0.5f, 9.5f);
-
-                spawnEnemy = newEnemy.transform;
-
-                spawnEnemy.SetPositionAndRotation(new Vector3(spawnEnemyAtX, spawnEnemyAtY, 1.0f), Quaternion.identity);
-
+                // Set new enemy for player
                 player.GetComponent<PlayerController>().enemy = newEnemy.GetComponent<Rigidbody2D>();
                 enemyAlive = true;
                 respawnEnemyTimer = 3.0f;
@@ -154,6 +141,21 @@ public class ManagerScript : MonoBehaviour
 
     private void SetPlayField()
     {
+        // Player settings
+        PlayerCheck();
+
+        // Camera settings
+        SetCameraStateAndPositions();
+
+        // Enemy settings
+        SetEnemyStateAndMoveList();
+
+        // Score settings
+        SetGameStateAndScoreboard();
+    }
+
+    private void PlayerCheck()
+    {
         playerAlive = GameObject.FindGameObjectWithTag("Player");
         if (!playerAlive)
         {
@@ -164,20 +166,35 @@ public class ManagerScript : MonoBehaviour
         {
             playerSpawn = player.transform;
         }
+    }
+
+    private void SetCameraStateAndPositions()
+    {
+        moveCamera = false;
         camPosMenu = new(-40.0f, 0.0f, -1.0f);
         camPosField = new(0.0f, 0.0f, -1.0f);
+    }
+
+    private void SetEnemyStateAndMoveList()
+    {
         enemyAlive = true;
         moveList = new Dictionary<int, Vector2>();
         respawnEnemyTimer = 3.0f;
+    }
+
+    private void SetScoreAttributes()
+    {
         lastScore = score;
         score = 0;
         scoreFrames = 0;
         scoreMultiplier = 1;
+    }
+
+    private void SetGameStateAndScoreboard()
+    {
+        gameOn = false;
         scoreboard.text = score.ToString();
         spawnPowerupTimer = 10.0f;
-        gameOn = false;
-        moveCamera = false;
-
     }
 
     private void PowerupCheck()
@@ -206,8 +223,6 @@ public class ManagerScript : MonoBehaviour
                 }
                 spawnPowerupLocation = transform;
                 spawnPowerupLocation.position.Set(spawnPowerupLocationX, spawnPowerupLocationY, 1.0f);
-
-
 
                 //decide which powerup to spawn
                 spawnPowerupPickupCode = Random.Range(0.0f, 100.0f);

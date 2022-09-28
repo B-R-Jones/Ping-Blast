@@ -4,22 +4,24 @@ using UnityEngine;
 
 public class RFManager : MonoBehaviour
 {
+    // Entity attributes
     public float lifeTimer;
+
     // Start is called before the first frame update
     void Start()
     {
-        lifeTimer = 5.0f;
+        LoadPlaySettings();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void FixedUpdate()
     {
-        if (lifeTimer < 0) { Destroy(gameObject); } else { lifeTimer -= Time.deltaTime; }
+        Decay();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -40,5 +42,15 @@ public class RFManager : MonoBehaviour
 
             Destroy(gameObject);
         }
+    }
+
+    private void LoadPlaySettings()
+    {
+        lifeTimer = 5.0f;
+    }
+
+    private void Decay()
+    {
+        if (lifeTimer < 0) { Destroy(gameObject); } else { lifeTimer -= Time.deltaTime; }
     }
 }

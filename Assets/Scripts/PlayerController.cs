@@ -69,20 +69,20 @@ public class PlayerController : MonoBehaviour
         managerScript = manager.GetComponent<ManagerScript>();
 
         // Player settings
-        myRigidbody = GetComponent<Rigidbody2D>;
-        myPos = myRigidBody.position;
+        myRigidbody = GetComponent<Rigidbody2D>();
+        myPos = myRigidbody.transform.position;
 
         // Ghost settings
         ghost = GameObject.FindGameObjectWithTag("Ghost").gameObject.GetComponent<Rigidbody2D>();
 
         //Enemy and enemy movement
         enemy = GameObject.FindGameObjectWithTag("Enemy").gameObject.GetComponent<Rigidbody2D>();
-        //enemyDetected = true;
-        enemySteps = new Dictionary<int, Vector2>();
+        enemyDetected = true;
         enemySteps = managerScript.moveList;
-        //stepCounter = managerScript.moveCounter;
+        enemySteps = new Dictionary<int, Vector2>();
+        stepCounter = managerScript.moveCounter;
         stepIndex = managerScript.moveIndex;
-        //enemyMoveTimer = Random.Range(0f, 3f);
+        enemyMoveTimer = Random.Range(0f, 3f);
 
         // Powerup and firing settings
         rapidFireOn = false;
@@ -93,6 +93,7 @@ public class PlayerController : MonoBehaviour
         shotNumber = 1;
 
         // Movement settings
+        if (movementMultiplier == 0) { movementMultiplier = 5; }
         shiftSpeed = 0.0f;
     }
 
@@ -236,6 +237,7 @@ public class PlayerController : MonoBehaviour
 
         ghost.position = Vector2.MoveTowards(ghostPos, newGhostPos, movementMultiplier * Time.deltaTime);
 
+        if (newGhostPos == null) { Debug.Log("navi"); }
         enemySteps.Add(stepIndex, newGhostPos);
         stepIndex++;
     }

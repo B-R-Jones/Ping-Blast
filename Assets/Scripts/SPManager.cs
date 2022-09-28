@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class SPManager : MonoBehaviour
 {
+    // Entity attributes
     public float lifeTimer;
+
     // Start is called before the first frame update
     void Start()
     {
-        lifeTimer = 5.0f;
+        LoadPlaySettings();
     }
 
     // Update is called once per frame
@@ -19,7 +21,7 @@ public class SPManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (lifeTimer < 0) { Destroy(gameObject); } else { lifeTimer -= Time.deltaTime; }
+        Decay();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -40,5 +42,15 @@ public class SPManager : MonoBehaviour
 
             Destroy(gameObject);
         }
+    }
+
+    private void LoadPlaySettings()
+    {
+        lifeTimer = 5.0f;
+    }
+
+    private void Decay()
+    {
+        if (lifeTimer < 0) { Destroy(gameObject); } else { lifeTimer -= Time.deltaTime; }
     }
 }

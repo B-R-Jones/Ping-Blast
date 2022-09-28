@@ -39,10 +39,10 @@ public class ShotDirection : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         string collTag = collision.gameObject.tag;
-        if (collTag = "Enemy" && pORe == "p") { HitEnemy(); }
-        if (collTag = "Player" && pORe == "e") { HitPlayer(); }
-        if (collTag = "Powerup") { HitPowerup(); }
-        if (collTag = "Bullet" && pORe == "p") { IncreaseMultiplier(); }
+        if (collTag == "Enemy" && pORe == "p") { HitEnemy(collision); }
+        if (collTag == "Player" && pORe == "e") { HitPlayer(collision); }
+        if (collTag == "Powerup") { HitPowerup(collision); }
+        if (collTag == "Bullet" && pORe == "p") { IncreaseMultiplier(collision); }
     }
 
     private void LoadPlaySettings()
@@ -83,7 +83,7 @@ public class ShotDirection : MonoBehaviour
         }
     }
 
-    private void HitEnemy()
+    private void HitEnemy(Collision2D collision)
     {
         managerScript.enemyAlive = false;
         managerScript.score += 50 * managerScript.scoreMultiplier;
@@ -93,14 +93,14 @@ public class ShotDirection : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void HitPlayer()
+    private void HitPlayer(Collision2D collision)
     {
         managerScript.playerAlive = false;
         Destroy(collision.gameObject);
         Destroy(gameObject);
     }
 
-    private void HitPowerup()
+    private void HitPowerup(Collision2D collision)
     {
             if (pORe == "p") { managerScript.scoreMultiplier += 3; }
             if (pORe == "e") { managerScript.score -= 2; }
@@ -108,7 +108,7 @@ public class ShotDirection : MonoBehaviour
             Destroy(gameObject);
     }
 
-    private void IncreaseMultiplier()
+    private void IncreaseMultiplier(Collision2D collision)
     {
             managerScript.scoreMultiplier += 1;
             Destroy(collision.gameObject);
@@ -117,13 +117,15 @@ public class ShotDirection : MonoBehaviour
 
     private void Launch()
     {
-        Vector3 myPos = new Vector3(GetComponent<Rigidbody2D>().position);
-        Vector2 direction = new Vector2(destination.x - myPos.x, destination.y - myPos.y).normalized;
+        Vector2 myPos = new(GetComponent<Rigidbody2D>().position.x,
+                            GetComponent<Rigidbody2D>().position.y);
+        Vector2 direction = new Vector2(destination.x - myPos.x, 
+                                        destination.y - myPos.y).normalized;
         GetComponent<Rigidbody2D>().velocity = direction * flightSpeed;
     }
 
     private void Decay()
     {
-        if (timer < 0) { Destroy(gameObject); } else { lifeTimer -= Time.deltaTime; }
+        if (lifeTimer < 0) { Destroy(gameObject); } else { lifeTimer -= Time.deltaTime; }
     }
 }

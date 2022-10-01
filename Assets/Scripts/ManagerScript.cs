@@ -6,17 +6,19 @@ using UnityEngine;
 public class ManagerScript : MonoBehaviour
 {
     // Enemy state, movement dictionary, steppers, respawn timer and shot
-    private GameObject enemy;
-    [HideInInspector] public bool enemyAlive;
+    private GameObject enemy; // Leave open to easily swap out enemies?
+    public GameObject enemyToSpawn;
+    public bool enemyAlive;
     [HideInInspector] public Dictionary<int, Vector2> moveList; // Accessed by PlayerController/FireControl
-    [HideInInspector] public int moveCounter; // Accessed by FireControl
-    [HideInInspector] public int moveIndex; // Accessed by PlayerController/FireControl
+    public int moveCounter; // Accessed by FireControl
+    public int moveIndex; // Accessed by PlayerController/FireControl
     private float respawnEnemyTimer;
     public float respawnEnemySeconds; // Leave open to easily change in the future
     public GameObject shot; // Leave open for easy swapping of ammo in the future
 
     // Player entity, state, spawn and ghost
     private GameObject player;
+    public GameObject playerToSpawn;
     [HideInInspector] public bool playerAlive;
     private Transform playerSpawn;
 
@@ -64,10 +66,10 @@ public class ManagerScript : MonoBehaviour
     {
         if (gameOn)
         {
+            EnemyCheck();
             MoveCameraTo(0);
             FrameScore();
             PowerupCheck();
-            EnemyCheck();
             PlayerCheck();
         }
         else
@@ -94,12 +96,33 @@ public class ManagerScript : MonoBehaviour
         }
     }
 
+    private void PlayerAliveCheck()
+    {
+        playerAlive = GameObject.FindGameObjectWithTag("Player");
+        if (!playerAlive)
+        {
+            Instantiate(playerToSpawn, playerSpawn);
+            player = GameObject.FindGameObjectWithTag("Player");
+            //playerAlive = true;
+        }
+        else
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+            playerSpawn = player.transform;
+        }
+    }
+
     private void EnemyCheck()
     {
         enemyAlive = GameObject.FindGameObjectWithTag("Enemy");
         if (!enemyAlive)
         {
-            if (respawnEnemyTimer < 0) { RespawnEnemy(1); } else { DecayTimer(respawnEnemyTimer); }
+            Debug.Log($"No enemy found!");
+            if (respawnEnemyTimer < 0) { RespawnEnemy(1); } else { respawnEnemyTimer = DecayTimer(respawnEnemyTimer); }
+        }
+        else
+        {
+            enemy = GameObject.FindGameObjectWithTag("Enemy");
         }
     }
 
@@ -123,21 +146,6 @@ public class ManagerScript : MonoBehaviour
         SetGameStateAndScoreboard();
     }
 
-    private void PlayerAliveCheck()
-    {
-        playerAlive = GameObject.FindGameObjectWithTag("Player");
-        if (!playerAlive)
-        {
-            Instantiate(player, playerSpawn);
-            playerAlive = true;
-        }
-        else
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-            playerSpawn = player.transform;
-        }
-    }
-
     private void SetCameraStateAndPositions()
     {
         moveCamera = false;
@@ -154,9 +162,6 @@ public class ManagerScript : MonoBehaviour
 
     private void SetGameStateAndScoreboard()
     {
-        scoreboard = GameObject.Find("Scoreboard").GetComponent<TextMeshPro>();
-        multiplierBoard = GameObject.Find("Multiplier").GetComponent<TextMeshPro>();
-        nextHitBoard = GameObject.Find("NextHit").GetComponent<TextMeshPro>();
         SetScoreAttributes();
         gameOn = false;
         scoreboard.text = score.ToString();
@@ -173,7 +178,8 @@ public class ManagerScript : MonoBehaviour
 
     private void RespawnEnemy(int mode)
     {
-        GameObject newEnemy = Instantiate(enemy);
+        //GameObject newEnemy = Instantiate(enemy);
+        enemy = Instantiate(enemyToSpawn);
         float spawnEnemyAtX = 0.0f;
         float spawnEnemyAtY = 0.0f;
         switch (mode)
@@ -190,7 +196,7 @@ public class ManagerScript : MonoBehaviour
                 break;
         }
         Vector3 spawnLocation = new Vector3(spawnEnemyAtX, spawnEnemyAtY, 1.0f);
-        newEnemy.transform.SetPositionAndRotation(spawnLocation, Quaternion.identity);
+        enemy.transform.SetPositionAndRotation(spawnLocation, Quaternion.identity);
         enemyAlive = true;
         respawnEnemyTimer = respawnEnemySeconds;
     }
@@ -242,7 +248,7 @@ public class ManagerScript : MonoBehaviour
         }
         else
         {
-            DecayTimer(spawnPowerupTimer);
+            spawnPowerupTimer = DecayTimer(spawnPowerupTimer);
         }
     }
 
@@ -272,9 +278,9 @@ public class ManagerScript : MonoBehaviour
         gameOn = true;
     }
 
-    private void DecayTimer(float timer)
+    private float DecayTimer(float timer)
     {
-        timer -= Time.deltaTime;
+        return timer -= Time.deltaTime;
     }
 
     private void ClearField()

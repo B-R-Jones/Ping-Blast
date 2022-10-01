@@ -16,11 +16,11 @@ public class FireControl : MonoBehaviour
     // Movement attributes
     private float moveTimer;
     private Dictionary<int, Vector2> mySteps;
-    private int stepCounter;
+    public int stepCounter;
 
     // Weapon attributes and modifiers
     [HideInInspector] public GameObject shot; // Leave open for easy swapping of shots in dev mode    
-    [HideInInspector] public float shotTimer; // Accessed by RFManager/SPManager
+    public float shotTimer; // Accessed by RFManager/SPManager
     [HideInInspector] public int shotNumber; // Accessed by SPManager
     private float fireChance;
     private float _fireChance;
@@ -51,7 +51,7 @@ public class FireControl : MonoBehaviour
         else
         {
             MovementCheck();
-            //DetectFire();
+            DetectFire();
         }
     }
 
@@ -63,20 +63,20 @@ public class FireControl : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
 
         // Entity settings
-        coolDownTimer = 2.0f;
+        coolDownTimer = 0.5f;
 
         // Movement settings
         moveTimer = Random.Range(0.5f, 3.0f);
-        //moveTimer = 5.0f;
-        
         
         mySteps = new Dictionary<int, Vector2>();
         //mySteps = new Dictionary<int, Vector2>();
-        stepCounter = 0;
+        //stepCounter = 0;
+        stepCounter = managerScript.moveIndex;
         
         // Firing controls
         shotTimer = 1.0f;
         shotNumber = 1;
+        fireChance = Random.Range(0.0f, 100.0f);
         fireChanceTimer = 15.0f;
         rapidFireTimer = 10.0f;
         spreadShotTimer = 10.0f;
@@ -115,19 +115,19 @@ public class FireControl : MonoBehaviour
     private void MoveSquareEnemy()
     {
         mySteps = managerScript.moveList;
-        Debug.Log($"mSTEP: {mySteps.Count}");
-        Debug.Log($"mSTEP: {mySteps.ContainsKey(stepCounter)}");
+        
+        if (mySteps == null) { Debug.Log("STEPS NULL"); return; }
         if (mySteps.ContainsKey(stepCounter) && mySteps.Count >= 1)
         {
             Vector2 currentPos = GetComponent<Rigidbody2D>().transform.position;
-            Vector2 destination = new Vector2(0.0f, 0.0f);
+            Vector2 destination;
             powerup = CheckForPowerup();
             if (powerup != null)
             {
                 if (powerup.position.y >= 0.5f)
                 {
                     destination = powerup.position;
-                    transform.position = Vector2.MoveTowards(currentPos, destination, Time.deltaTime);
+                    transform.position = Vector2.MoveTowards(currentPos, destination, 5 * Time.deltaTime);
                 }
             }
             else

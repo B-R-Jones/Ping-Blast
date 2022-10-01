@@ -16,7 +16,6 @@ public class PlayerController : MonoBehaviour
     // Other game entities
     private GameObject manager;
     private ManagerScript managerScript;
-    [HideInInspector] public Rigidbody2D enemy; // Accessed by ManagerScript
     [HideInInspector] public Rigidbody2D ghost; // Accessed by ManagerScript
 
     // Vector positions of the ghost
@@ -25,7 +24,7 @@ public class PlayerController : MonoBehaviour
 
     // Enemy movement dictionary, steppers, etc.
     private Dictionary<int, Vector2> enemySteps;
-    private int stepIndex;
+    public int stepIndex;
 
     // Weapon attributes and modifiers
     public GameObject shot; // Leave open for easy swapping of shots in dev mode
@@ -68,8 +67,7 @@ public class PlayerController : MonoBehaviour
         // Ghost settings
         ghost = GameObject.FindGameObjectWithTag("Ghost").gameObject.GetComponent<Rigidbody2D>();
 
-        //Enemy and enemy movement
-        enemy = GameObject.FindGameObjectWithTag("Enemy").gameObject.GetComponent<Rigidbody2D>();
+        //Enemy movement list
         enemySteps = managerScript.moveList;
         enemySteps = new Dictionary<int, Vector2>();
         stepIndex = managerScript.moveIndex;
@@ -89,7 +87,6 @@ public class PlayerController : MonoBehaviour
 
     private void SetPositions()
     {
-        //if (enemyDetected) { enemyPos = enemy.position; }
         newPos = GetMovement(myPos);
     }
 
@@ -175,7 +172,6 @@ public class PlayerController : MonoBehaviour
     private void SetGhost()
     {
         myPos = myRigidbody.transform.position;
-
         ghostPos.x = myPos.x;
         ghostPos.y = -1 * myPos.y;
         newGhostPos = ghostPos;
@@ -185,6 +181,7 @@ public class PlayerController : MonoBehaviour
         if (newGhostPos == null) { Debug.Log("navi"); }
         enemySteps.Add(stepIndex, newGhostPos);
         managerScript.moveList = enemySteps;
+        managerScript.moveIndex = stepIndex;
         stepIndex++;
     }
 }

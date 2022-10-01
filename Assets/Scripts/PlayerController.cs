@@ -174,6 +174,8 @@ public class PlayerController : MonoBehaviour
 
     private void SetGhost()
     {
+        myPos = myRigidbody.transform.position;
+
         ghostPos.x = myPos.x;
         ghostPos.y = -1 * myPos.y;
         newGhostPos = ghostPos;
@@ -182,6 +184,7 @@ public class PlayerController : MonoBehaviour
 
         if (newGhostPos == null) { Debug.Log("navi"); }
         enemySteps.Add(stepIndex, newGhostPos);
+        managerScript.moveList = enemySteps;
         stepIndex++;
     }
 }

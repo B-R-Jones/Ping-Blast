@@ -44,8 +44,15 @@ public class FireControl : MonoBehaviour
 
     private void FixedUpdate()
     {
-        MovementCheck();
-        DetectFire();
+        if (manager.GetComponent<ManagerScript>().gameOn && coolDownTimer > 0) 
+        { 
+            coolDownTimer -= Time.deltaTime; 
+        }
+        else
+        {
+            MovementCheck();
+            //DetectFire();
+        }
     }
 
     private void LoadPlaySettings()
@@ -60,9 +67,13 @@ public class FireControl : MonoBehaviour
 
         // Movement settings
         moveTimer = Random.Range(0.5f, 3.0f);
+        //moveTimer = 5.0f;
+        
+        
         mySteps = new Dictionary<int, Vector2>();
-        mySteps = managerScript.moveList;
-
+        //mySteps = new Dictionary<int, Vector2>();
+        stepCounter = 0;
+        
         // Firing controls
         shotTimer = 1.0f;
         shotNumber = 1;
@@ -73,12 +84,12 @@ public class FireControl : MonoBehaviour
 
     private void MovementCheck()
     {
-        if (moveTimer < 0) { MoveSquareEnemy(); } else { moveTimer -= moveTimer; }
+        if (moveTimer < 0) { MoveSquareEnemy(); } else { moveTimer -= Time.deltaTime; }
     }
 
     private void DetectFire()
     {
-        if (manager.GetComponent<ManagerScript>().gameOn && coolDownTimer < 0)
+        if (managerScript.gameOn && coolDownTimer < 0)
         {
             _fireChance = Random.Range(0.0f, 100.0f);
             fireChanceTimer -= Time.deltaTime;
@@ -99,11 +110,13 @@ public class FireControl : MonoBehaviour
                 fireChance = Random.Range(0.0f, 100.0f);
             }
         }
-        if (manager.GetComponent<ManagerScript>().gameOn && coolDownTimer > 0) { coolDownTimer -= Time.deltaTime; }
     }
 
     private void MoveSquareEnemy()
     {
+        mySteps = managerScript.moveList;
+        Debug.Log($"mSTEP: {mySteps.Count}");
+        Debug.Log($"mSTEP: {mySteps.ContainsKey(stepCounter)}");
         if (mySteps.ContainsKey(stepCounter) && mySteps.Count >= 1)
         {
             Vector2 myPos = GetComponent<Rigidbody2D>().transform.position;
@@ -113,14 +126,29 @@ public class FireControl : MonoBehaviour
             {
                 if (powerup.position.y >= 0.5f)
                 {
-                    direction = new Vector2(myPos.x - powerup.position.x, myPos.y - powerup.position.y).normalized;
-                    GetComponent<Rigidbody2D>().velocity = -1 * 5 * direction;
+                    //direction = new Vector2(myPos.x - powerup.position.x, myPos.y - powerup.position.y).normalized;
+                    //GetComponent<Rigidbody2D>().velocity = -1 * 5 * direction;
+
+
+                    
+                    Vector2 destination = new Vector2(powerup.position.x, powerup.position.y);
+
+                    Vector2 currentPos = GetComponent<Rigidbody2D>().transform.position;
+                    transform.position = Vector2.MoveTowards(currentPos, destination, Time.deltaTime);
+
+                    Debug.Log($"MMM [{currentPos}]:[{destination}]");
                 }
             }
             else
             {
                 direction = new Vector2(myPos.x - mySteps[stepCounter].x, myPos.y - mySteps[stepCounter].y).normalized;
                 GetComponent<Rigidbody2D>().velocity = -1 * 5 * direction;
+
+                //Vector2 currentPos = GetComponent<Rigidbody2D>().transform.position;
+                //Vector2 destination = new Vector2(mySteps[stepCounter].x, mySteps[stepCounter].y);
+                //transform.position = Vector2.MoveTowards(currentPos, destination, 5 * Time.deltaTime);
+
+                //Debug.Log($"MMM [{currentPos}]:[{destination}]");
             }
         }
         stepCounter++;

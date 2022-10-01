@@ -5,58 +5,50 @@ using UnityEngine;
 
 public class ManagerScript : MonoBehaviour
 {
-    public GameObject player;
-    public Transform playerSpawn;
-    public GameObject enemy;
-    public Rigidbody2D ghost;
-    public GameObject shot;
-
-    [HideInInspector]
-    public Transform spawn;
-
-    [HideInInspector]
-    public int stepCount;
-
-    [HideInInspector]
-    public Dictionary<int, Vector2> moveList;
-    [HideInInspector]
-    public int moveCounter;
-    [HideInInspector]
-    public int moveIndex;
-
+    // Enemy state, movement dictionary, steppers, respawn timer and shot
+    private GameObject enemy; // Leave open to easily swap out enemies?
+    public GameObject enemyToSpawn;
     public bool enemyAlive;
-    public float respawnEnemyTimer;
-    public bool playerAlive;
+    [HideInInspector] public Dictionary<int, Vector2> moveList; // Accessed by PlayerController/FireControl
+    public int moveCounter; // Accessed by FireControl
+    public int moveIndex; // Accessed by PlayerController/FireControl
+    private float respawnEnemyTimer;
+    public float respawnEnemySeconds; // Leave open to easily change in the future
+    public GameObject shot; // Leave open for easy swapping of ammo in the future
 
-    [HideInInspector]
-    public int score;
-    [HideInInspector]
-    public int scoreMultiplier;
+    // Player entity, state, spawn and ghost
+    private GameObject player;
+    public GameObject playerToSpawn;
+    [HideInInspector] public bool playerAlive;
+    private Transform playerSpawn;
+
+    // Scoreboard entities and attributes
     public TextMeshPro scoreboard;
     public TextMeshPro multiplierBoard;
     public TextMeshPro nextHitBoard;
+    [HideInInspector] public int score; // Accessed by RFManager/SPManager
+    [HideInInspector] public int scoreMultiplier; // Accessed by RFManager/SPManager
     private int scoreFrames;
-    public int lastScore;
+    [HideInInspector] public int lastScore;
 
+    // Powerup entities and spawning numbers and attributes
+    public GameObject RapidfirePowerup; // Leave open for easy swapping of powerups in the future
+    public GameObject SpreadshotPowerup; // Leave open for easy swapping of powerups in the future
+    private float spawnPowerupTimer;
+    private float spawnPowerupChance;
+    private float spawnPowerupLocationCode;
+    private float spawnPowerupPickupCode;
+    private float spawnPowerupLocationX;
+    private float spawnPowerupLocationY;
 
+    // Camera, state and attributes
+    public Camera mainCamera; // Leave open for easy swapping of cameras in the future
+    private bool moveCamera;
+    private Vector3 camPosMenu;
+    private Vector3 camPosField;
 
-    public float spawnPowerupTimer;
-    public float spawnPowerupChance;
-    public float spawnPowerupLocationCode;
-    public float spawnPowerupPickupCode;
-    public float spawnPowerupLocationX;
-    public float spawnPowerupLocationY;
-
-    public GameObject RapidfirePowerup;
-    public GameObject SpreadshotPowerup;
-
-    public bool gameOn;
-    public bool moveCamera;
-    public Vector3 camPosMenu;
-    public Vector3 camPosField;
-
-    public Camera mainCamera;
-
+    // Game state
+    public bool gameOn; // Accessed by multiple scripts to check game state
 
     // Start is called before the first frame update
     void Start()
@@ -72,17 +64,12 @@ public class ManagerScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //if (moveCamera) { MoveCameraTo(0); } else { MoveCameraTo(1); }
         if (gameOn)
         {
-            MoveCameraTo(0);
-
-            FrameScore();
-
-            PowerupCheck();
-
             EnemyCheck();
-
+            MoveCameraTo(0);
+            FrameScore();
+            PowerupCheck();
             PlayerCheck();
         }
         else
@@ -93,6 +80,7 @@ public class ManagerScript : MonoBehaviour
 
     private void PlayerCheck()
     {
+        PlayerAliveCheck();
         if (playerAlive)
         {
             multiplierBoard.text = scoreMultiplier.ToString() + "x";
@@ -103,47 +91,38 @@ public class ManagerScript : MonoBehaviour
         {
             gameOn = false;
             MoveCameraTo(1);
+            ClearField();
             SetPlayField();
+        }
+    }
+
+    private void PlayerAliveCheck()
+    {
+        playerAlive = GameObject.FindGameObjectWithTag("Player");
+        if (!playerAlive)
+        {
+            Instantiate(playerToSpawn, playerSpawn);
+            player = GameObject.FindGameObjectWithTag("Player");
+            //playerAlive = true;
+        }
+        else
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+            playerSpawn = player.transform;
         }
     }
 
     private void EnemyCheck()
     {
+        enemyAlive = GameObject.FindGameObjectWithTag("Enemy");
         if (!enemyAlive)
         {
-            if (respawnEnemyTimer < 0)
-            {
-                GameObject newEnemy;
-
-                Debug.Log($"SPA1: [{spawn}]");
-
-                //spawn.transform.position.Set(Random.Range(-4.5f, 4.5f), Random.Range(0.5f, 9.5f), 1.0f);
-                Debug.Log($"SPA2: [{spawn}]");
-
-
-
-                newEnemy = Instantiate(enemy);
-                Transform spawnEnemy;
-                float spawnEnemyAtX;
-                float spawnEnemyAtY;
-
-                //find our spawn location
-
-                spawnEnemyAtX = Random.Range(-4.5f, 4.5f);
-                spawnEnemyAtY = Random.Range(0.5f, 9.5f);
-
-                spawnEnemy = newEnemy.transform;
-
-                spawnEnemy.SetPositionAndRotation(new Vector3(spawnEnemyAtX, spawnEnemyAtY, 1.0f), Quaternion.identity);
-
-                player.GetComponent<PlayerController>().enemy = newEnemy.GetComponent<Rigidbody2D>();
-                enemyAlive = true;
-                respawnEnemyTimer = 3.0f;
-            }
-            else
-            {
-                respawnEnemyTimer -= Time.deltaTime;
-            }
+            Debug.Log($"No enemy found!");
+            if (respawnEnemyTimer < 0) { RespawnEnemy(1); } else { respawnEnemyTimer = DecayTimer(respawnEnemyTimer); }
+        }
+        else
+        {
+            enemy = GameObject.FindGameObjectWithTag("Enemy");
         }
     }
 
@@ -154,30 +133,72 @@ public class ManagerScript : MonoBehaviour
 
     private void SetPlayField()
     {
-        playerAlive = GameObject.FindGameObjectWithTag("Player");
-        if (!playerAlive)
-        {
-            Instantiate(player, playerSpawn);
-            playerAlive = true;
-        }
-        else
-        {
-            playerSpawn = player.transform;
-        }
+        // Player settings
+        PlayerCheck();
+
+        // Camera settings
+        SetCameraStateAndPositions();
+
+        // Enemy settings
+        SetEnemyStateAndMoveList();
+
+        // Score settings
+        SetGameStateAndScoreboard();
+    }
+
+    private void SetCameraStateAndPositions()
+    {
+        moveCamera = false;
         camPosMenu = new(-40.0f, 0.0f, -1.0f);
         camPosField = new(0.0f, 0.0f, -1.0f);
-        enemyAlive = true;
+    }
+
+    private void SetEnemyStateAndMoveList()
+    {
+        RespawnEnemy(0);
         moveList = new Dictionary<int, Vector2>();
-        respawnEnemyTimer = 3.0f;
+        respawnEnemyTimer = respawnEnemySeconds < 0.5f ? 3.0f : respawnEnemySeconds;
+    }
+
+    private void SetGameStateAndScoreboard()
+    {
+        SetScoreAttributes();
+        gameOn = false;
+        scoreboard.text = score.ToString();
+        spawnPowerupTimer = 10.0f;
+    }
+
+    private void SetScoreAttributes()
+    {
         lastScore = score;
         score = 0;
         scoreFrames = 0;
         scoreMultiplier = 1;
-        scoreboard.text = score.ToString();
-        spawnPowerupTimer = 10.0f;
-        gameOn = false;
-        moveCamera = false;
+    }
 
+    private void RespawnEnemy(int mode)
+    {
+        //GameObject newEnemy = Instantiate(enemy);
+        enemy = Instantiate(enemyToSpawn);
+        float spawnEnemyAtX = 0.0f;
+        float spawnEnemyAtY = 0.0f;
+        switch (mode)
+        {
+            case 0:
+                // fresh start
+                spawnEnemyAtX = 0.0f;
+                spawnEnemyAtY = 8.0f;
+                break;
+            case 1:
+                // enemy has been killed and needs respawning
+                spawnEnemyAtX = Random.Range(-4.5f, 4.5f);
+                spawnEnemyAtY = Random.Range(0.5f, 9.5f);
+                break;
+        }
+        Vector3 spawnLocation = new Vector3(spawnEnemyAtX, spawnEnemyAtY, 1.0f);
+        enemy.transform.SetPositionAndRotation(spawnLocation, Quaternion.identity);
+        enemyAlive = true;
+        respawnEnemyTimer = respawnEnemySeconds;
     }
 
     private void PowerupCheck()
@@ -207,8 +228,6 @@ public class ManagerScript : MonoBehaviour
                 spawnPowerupLocation = transform;
                 spawnPowerupLocation.position.Set(spawnPowerupLocationX, spawnPowerupLocationY, 1.0f);
 
-
-
                 //decide which powerup to spawn
                 spawnPowerupPickupCode = Random.Range(0.0f, 100.0f);
 
@@ -221,18 +240,15 @@ public class ManagerScript : MonoBehaviour
                     spawnPowerupPickup = SpreadshotPowerup;
                 }
 
-
                 GameObject spawnedPickup = Instantiate(spawnPowerupPickup);
                 spawnedPickup.transform.SetPositionAndRotation(new(spawnPowerupLocationX, spawnPowerupLocationY, 1.0f), Quaternion.identity);
 
                 spawnPowerupTimer = 5.0f;
-
             }
-
         }
         else
         {
-            spawnPowerupTimer -= Time.deltaTime;
+            spawnPowerupTimer = DecayTimer(spawnPowerupTimer);
         }
     }
 
@@ -260,5 +276,17 @@ public class ManagerScript : MonoBehaviour
     {
         moveCamera = true;
         gameOn = true;
+    }
+
+    private float DecayTimer(float timer)
+    {
+        return timer -= Time.deltaTime;
+    }
+
+    private void ClearField()
+    {
+        Destroy(GameObject.FindGameObjectWithTag("Enemy"));
+        Destroy(GameObject.FindGameObjectWithTag("Powerup"));
+        Destroy(GameObject.FindGameObjectWithTag("Bullet"));
     }
 }

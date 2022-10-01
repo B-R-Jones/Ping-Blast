@@ -86,8 +86,8 @@ public class ShotDirection : MonoBehaviour
     private void HitEnemy(Collision2D collision)
     {
         managerScript.enemyAlive = false;
+        managerScript.moveCounter = collision.gameObject.GetComponent<FireControl>().stepCounter;
         managerScript.score += 50 * managerScript.scoreMultiplier;
-        managerScript.spawn = collision.transform;
         managerScript.scoreMultiplier = 1;
         Destroy(collision.gameObject);
         Destroy(gameObject);
@@ -96,6 +96,7 @@ public class ShotDirection : MonoBehaviour
     private void HitPlayer(Collision2D collision)
     {
         managerScript.playerAlive = false;
+        managerScript.moveIndex = collision.gameObject.GetComponent<PlayerController>().stepIndex;
         Destroy(collision.gameObject);
         Destroy(gameObject);
     }
@@ -110,9 +111,16 @@ public class ShotDirection : MonoBehaviour
 
     private void IncreaseMultiplier(Collision2D collision)
     {
-            managerScript.scoreMultiplier += 1;
-            Destroy(collision.gameObject);
-            Destroy(gameObject);
+        if (collision.gameObject.GetComponent<ShotDirection>())
+        {
+            if (collision.gameObject.GetComponent<ShotDirection>().pORe == "e")
+            {
+                managerScript.scoreMultiplier += 1;
+                Destroy(collision.gameObject);
+                Destroy(gameObject);
+            }
+        }
+
     }
 
     private void Launch()

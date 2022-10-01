@@ -119,36 +119,21 @@ public class FireControl : MonoBehaviour
         Debug.Log($"mSTEP: {mySteps.ContainsKey(stepCounter)}");
         if (mySteps.ContainsKey(stepCounter) && mySteps.Count >= 1)
         {
-            Vector2 myPos = GetComponent<Rigidbody2D>().transform.position;
-            Vector2 direction;
+            Vector2 currentPos = GetComponent<Rigidbody2D>().transform.position;
+            Vector2 destination = new Vector2(0.0f, 0.0f);
             powerup = CheckForPowerup();
             if (powerup != null)
             {
                 if (powerup.position.y >= 0.5f)
                 {
-                    //direction = new Vector2(myPos.x - powerup.position.x, myPos.y - powerup.position.y).normalized;
-                    //GetComponent<Rigidbody2D>().velocity = -1 * 5 * direction;
-
-
-                    
-                    Vector2 destination = new Vector2(powerup.position.x, powerup.position.y);
-
-                    Vector2 currentPos = GetComponent<Rigidbody2D>().transform.position;
+                    destination = powerup.position;
                     transform.position = Vector2.MoveTowards(currentPos, destination, Time.deltaTime);
-
-                    Debug.Log($"MMM [{currentPos}]:[{destination}]");
                 }
             }
             else
             {
-                direction = new Vector2(myPos.x - mySteps[stepCounter].x, myPos.y - mySteps[stepCounter].y).normalized;
-                GetComponent<Rigidbody2D>().velocity = -1 * 5 * direction;
-
-                //Vector2 currentPos = GetComponent<Rigidbody2D>().transform.position;
-                //Vector2 destination = new Vector2(mySteps[stepCounter].x, mySteps[stepCounter].y);
-                //transform.position = Vector2.MoveTowards(currentPos, destination, 5 * Time.deltaTime);
-
-                //Debug.Log($"MMM [{currentPos}]:[{destination}]");
+                destination = mySteps[stepCounter];
+                transform.position = Vector2.MoveTowards(currentPos, destination, 5 * Time.deltaTime);
             }
         }
         stepCounter++;

@@ -6,7 +6,8 @@ using UnityEngine;
 public class ManagerScript : MonoBehaviour
 {
     // Enemy state, movement dictionary, steppers, respawn timer and shot
-    private bool enemyAlive;
+    private GameObject enemy;
+    [HideInInspector] public bool enemyAlive;
     [HideInInspector] public Dictionary<int, Vector2> moveList; // Accessed by PlayerController/FireControl
     [HideInInspector] public int moveCounter; // Accessed by FireControl
     [HideInInspector] public int moveIndex; // Accessed by PlayerController/FireControl
@@ -18,7 +19,6 @@ public class ManagerScript : MonoBehaviour
     private GameObject player;
     [HideInInspector] public bool playerAlive;
     private Transform playerSpawn;
-    private Rigidbody2D ghost;
 
     // Scoreboard entities and attributes
     private TextMeshPro scoreboard;
@@ -27,7 +27,7 @@ public class ManagerScript : MonoBehaviour
     [HideInInspector] public int score; // Accessed by RFManager/SPManager
     [HideInInspector] public int scoreMultiplier; // Accessed by RFManager/SPManager
     private int scoreFrames;
-    private int lastScore;
+    [HideInInspector] public int lastScore;
 
     // Powerup entities and spawning numbers and attributes
     public GameObject RapidfirePowerup; // Leave open for easy swapping of powerups in the future
@@ -78,6 +78,7 @@ public class ManagerScript : MonoBehaviour
 
     private void PlayerCheck()
     {
+        PlayerAliveCheck();
         if (playerAlive)
         {
             multiplierBoard.text = scoreMultiplier.ToString() + "x";
@@ -95,6 +96,7 @@ public class ManagerScript : MonoBehaviour
 
     private void EnemyCheck()
     {
+        enemyAlive = GameObject.FindGameObjectWithTag("Enemy");
         if (!enemyAlive)
         {
             if (respawnEnemyTimer < 0) { RespawnEnemy(1); } else { DecayTimer(respawnEnemyTimer); }
@@ -121,7 +123,7 @@ public class ManagerScript : MonoBehaviour
         SetGameStateAndScoreboard();
     }
 
-    private void PlayerCheck()
+    private void PlayerAliveCheck()
     {
         playerAlive = GameObject.FindGameObjectWithTag("Player");
         if (!playerAlive)
@@ -168,8 +170,8 @@ public class ManagerScript : MonoBehaviour
     private void RespawnEnemy(int mode)
     {
         GameObject newEnemy = Instantiate(enemy);
-        float spawnEnemyAtX;
-        float spawnEnemyAtY;
+        float spawnEnemyAtX = 0.0f;
+        float spawnEnemyAtY = 0.0f;
         switch (mode)
         {
             case 0:
@@ -273,8 +275,8 @@ public class ManagerScript : MonoBehaviour
 
     private void ClearField()
     {
-        Destroy(GameObject.FindObjectWithTag("Enemy"));
-        Destroy(GameObject.FindObjectWithTag("Powerup"));
-        Destroy(GameObject.FindObjectWithTag("Bullet"));
+        Destroy(GameObject.FindGameObjectWithTag("Enemy"));
+        Destroy(GameObject.FindGameObjectWithTag("Powerup"));
+        Destroy(GameObject.FindGameObjectWithTag("Bullet"));
     }
 }

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2362753528290663212}
   - component: {fileID: 2504958003949448885}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Backborder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 3
+  m_SortingOrder: 5
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 8649560561340238364}
   - component: {fileID: 6262265493582672806}
   - component: {fileID: -2716557529652396862}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Rapid-fire Pickup
   m_TagString: Powerup
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingOrder: 6
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.9960785, g: 0, b: 0.86274517, a: 1}
   m_FlipX: 0

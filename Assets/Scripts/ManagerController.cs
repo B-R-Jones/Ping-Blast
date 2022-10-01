@@ -227,6 +227,7 @@ public class ManagerController : MonoBehaviour
                 }
                 spawnPowerupLocation = transform;
                 spawnPowerupLocation.position.Set(spawnPowerupLocationX, spawnPowerupLocationY, 1.0f);
+                //spawnPowerupLocation.SetPositionAndRotation(new Vector3(spawnPowerupLocationX, spawnPowerupLocationY), new Quaternion(0.0f, 0.0f, 45.0f, 0.0f));
 
                 //decide which powerup to spawn
                 spawnPowerupPickupCode = Random.Range(0.0f, 100.0f);
@@ -241,7 +242,7 @@ public class ManagerController : MonoBehaviour
                 }
 
                 GameObject spawnedPickup = Instantiate(spawnPowerupPickup);
-                spawnedPickup.transform.SetPositionAndRotation(new(spawnPowerupLocationX, spawnPowerupLocationY, 1.0f), Quaternion.identity);
+                spawnedPickup.transform.SetPositionAndRotation(new(spawnPowerupLocationX, spawnPowerupLocationY, 1.0f), spawnedPickup.transform.rotation);
 
                 spawnPowerupTimer = 5.0f;
             }

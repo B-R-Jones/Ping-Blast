@@ -87,7 +87,6 @@ public class ShotDirection : MonoBehaviour
     {
         managerScript.enemyAlive = false;
         managerScript.score += 50 * managerScript.scoreMultiplier;
-        managerScript.spawn = collision.transform;
         managerScript.scoreMultiplier = 1;
         Destroy(collision.gameObject);
         Destroy(gameObject);

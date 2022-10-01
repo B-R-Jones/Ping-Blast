@@ -21,9 +21,9 @@ public class ManagerScript : MonoBehaviour
     private Transform playerSpawn;
 
     // Scoreboard entities and attributes
-    private TextMeshPro scoreboard;
-    private TextMeshPro multiplierBoard;
-    private TextMeshPro nextHitBoard;
+    public TextMeshPro scoreboard;
+    public TextMeshPro multiplierBoard;
+    public TextMeshPro nextHitBoard;
     [HideInInspector] public int score; // Accessed by RFManager/SPManager
     [HideInInspector] public int scoreMultiplier; // Accessed by RFManager/SPManager
     private int scoreFrames;
@@ -133,6 +133,7 @@ public class ManagerScript : MonoBehaviour
         }
         else
         {
+            player = GameObject.FindGameObjectWithTag("Player");
             playerSpawn = player.transform;
         }
     }
@@ -153,6 +154,9 @@ public class ManagerScript : MonoBehaviour
 
     private void SetGameStateAndScoreboard()
     {
+        scoreboard = GameObject.Find("Scoreboard").GetComponent<TextMeshPro>();
+        multiplierBoard = GameObject.Find("Multiplier").GetComponent<TextMeshPro>();
+        nextHitBoard = GameObject.Find("NextHit").GetComponent<TextMeshPro>();
         SetScoreAttributes();
         gameOn = false;
         scoreboard.text = score.ToString();

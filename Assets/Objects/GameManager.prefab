@@ -568,7 +568,7 @@ MonoBehaviour:
   moveCounter: 0
   moveIndex: 0
   respawnEnemySeconds: 0
-  shot: {fileID: 2070925945577930812, guid: faedbc372d8efee45a420875c2c4a03c, type: 3}
+  shot: {fileID: 1587943570592679802, guid: ca3a245a3056d4a4092b58007fa405a5, type: 3}
   playerToSpawn: {fileID: 7572562721612609978, guid: edab44cbfb2cbe64cb024456a20eb70c, type: 3}
   playerAlive: 0
   scoreboard: {fileID: 415877277}

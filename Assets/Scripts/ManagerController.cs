@@ -227,7 +227,6 @@ public class ManagerController : MonoBehaviour
                 }
                 spawnPowerupLocation = transform;
                 spawnPowerupLocation.position.Set(spawnPowerupLocationX, spawnPowerupLocationY, 1.0f);
-                //spawnPowerupLocation.SetPositionAndRotation(new Vector3(spawnPowerupLocationX, spawnPowerupLocationY), new Quaternion(0.0f, 0.0f, 45.0f, 0.0f));
 
                 //decide which powerup to spawn
                 spawnPowerupPickupCode = Random.Range(0.0f, 100.0f);

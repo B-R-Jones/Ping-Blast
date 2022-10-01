@@ -271,7 +271,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ghost: {fileID: 0}
   stepIndex: 0
-  shot: {fileID: 2070925945577930812, guid: faedbc372d8efee45a420875c2c4a03c, type: 3}
+  shot: {fileID: 1587943570592679802, guid: ca3a245a3056d4a4092b58007fa405a5, type: 3}
   shotNumber: 0
   shotTimer: 1
   rapidFireOn: 0

@@ -158,7 +158,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -0.00000047683716, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &106072205
@@ -450,7 +450,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 11
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1244,7 +1244,7 @@ Transform:
   m_GameObject: {fileID: 1183240299}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.19999981, z: 0}
-  m_LocalScale: {x: 21, y: 3, z: 1}
+  m_LocalScale: {x: 0.7725, y: 0.15, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1641050784}
@@ -1291,8 +1291,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.9960785, g: 0.8862746, b: 0.48627454, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 66bd7c1b56f391741a21e2aa38f54694, type: 3}
+  m_Color: {r: 0.9960785, g: 0.8862746, b: 0.4745098, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1419,8 +1419,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 66bd7c1b56f391741a21e2aa38f54694, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1560,7 +1560,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0.22004247, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   _SortingLayer: 0
@@ -1864,7 +1864,7 @@ GameObject:
   - component: {fileID: 1985695974}
   - component: {fileID: 1985695975}
   m_Layer: 0
-  m_Name: Square
+  m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1878,8 +1878,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1985695973}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0.19999981, z: 0}
-  m_LocalScale: {x: 21.175, y: 3.175, z: 1}
+  m_LocalPosition: {x: -0, y: 0.2, z: 0}
+  m_LocalScale: {x: 21.5, y: 3.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1641050784}
@@ -2045,7 +2045,7 @@ GameObject:
   - component: {fileID: 2116800628}
   - component: {fileID: 2116800629}
   m_Layer: 0
-  m_Name: Square
+  m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2060,7 +2060,7 @@ Transform:
   m_GameObject: {fileID: 2116800627}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 13.25, y: 3.75, z: 1}
+  m_LocalScale: {x: 13.65, y: 4.15, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1437839369}
@@ -2125,22 +2125,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 13099097, guid: 49b4eee8efab0da42b5196171e0ca7a4, type: 3}
-      propertyPath: m_Color.b
-      value: 0.7216981
-      objectReference: {fileID: 0}
-    - target: {fileID: 13099097, guid: 49b4eee8efab0da42b5196171e0ca7a4, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 13099097, guid: 49b4eee8efab0da42b5196171e0ca7a4, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 13099097, guid: 49b4eee8efab0da42b5196171e0ca7a4, type: 3}
-      propertyPath: m_SortingOrder
-      value: -3
-      objectReference: {fileID: 0}
     - target: {fileID: 599467537488064828, guid: 49b4eee8efab0da42b5196171e0ca7a4, type: 3}
       propertyPath: m_Name
       value: Field
@@ -2188,30 +2172,6 @@ PrefabInstance:
     - target: {fileID: 599467537488064830, guid: 49b4eee8efab0da42b5196171e0ca7a4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 599467538161529930, guid: 49b4eee8efab0da42b5196171e0ca7a4, type: 3}
-      propertyPath: m_Color.b
-      value: 0.23113209
-      objectReference: {fileID: 0}
-    - target: {fileID: 599467538161529930, guid: 49b4eee8efab0da42b5196171e0ca7a4, type: 3}
-      propertyPath: m_Color.g
-      value: 0.563012
-      objectReference: {fileID: 0}
-    - target: {fileID: 599467538161529930, guid: 49b4eee8efab0da42b5196171e0ca7a4, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 599467538231158344, guid: 49b4eee8efab0da42b5196171e0ca7a4, type: 3}
-      propertyPath: m_Color.b
-      value: 0.9619114
-      objectReference: {fileID: 0}
-    - target: {fileID: 599467538231158344, guid: 49b4eee8efab0da42b5196171e0ca7a4, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 599467538231158344, guid: 49b4eee8efab0da42b5196171e0ca7a4, type: 3}
-      propertyPath: m_Color.r
-      value: 0.5707547
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49b4eee8efab0da42b5196171e0ca7a4, type: 3}
@@ -2286,18 +2246,6 @@ PrefabInstance:
     - target: {fileID: 7572562721612609978, guid: edab44cbfb2cbe64cb024456a20eb70c, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 7572562721612609979, guid: edab44cbfb2cbe64cb024456a20eb70c, type: 3}
-      propertyPath: enemy
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7572562721612609979, guid: edab44cbfb2cbe64cb024456a20eb70c, type: 3}
-      propertyPath: ghost
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7572562721612609979, guid: edab44cbfb2cbe64cb024456a20eb70c, type: 3}
-      propertyPath: manager
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7572562721612609981, guid: edab44cbfb2cbe64cb024456a20eb70c, type: 3}
       propertyPath: m_RootOrder

@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 593110805}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.25, y: 1.25, z: 1}
+  m_LocalScale: {x: 1.55, y: 1.55, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7572562721612609981}
@@ -269,18 +269,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a55b878cf3c7ed4a843f4126a3f62b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementMultiplier: 5
-  shiftSpeed: 0
-  fireSignal: 0
-  _CheckKeys: 0
-  enemy: {fileID: 0}
   ghost: {fileID: 0}
+  stepIndex: 0
   shot: {fileID: 2070925945577930812, guid: faedbc372d8efee45a420875c2c4a03c, type: 3}
-  manager: {fileID: 0}
   shotNumber: 0
+  shotTimer: 1
   rapidFireOn: 0
   spreadShotOn: 0
-  shotTimer: 1
 --- !u!61 &7572562721612609983
 BoxCollider2D:
   m_ObjectHideFlags: 0

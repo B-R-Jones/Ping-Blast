@@ -72,7 +72,6 @@ public class ManagerScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //if (moveCamera) { MoveCameraTo(0); } else { MoveCameraTo(1); }
         if (gameOn)
         {
             MoveCameraTo(0);

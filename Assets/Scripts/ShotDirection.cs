@@ -4,27 +4,63 @@ using UnityEngine;
 
 public class ShotDirection : MonoBehaviour
 {
-    public Vector2 destination;
+    // Game entities
     private GameObject field;
     private GameObject player;
     private GameObject enemy;
-    public GameObject manager;
+    private GameObject manager;
+    private ManagerScript managerScript;
+
+    // Entity and movement attributes
+    [HideInInspector] public string pORe; // Accessed by PlayerController/FireControl
+    private float lifeTimer;
+    [HideInInspector] public Vector2 destination; // Accessed by PlayerController/ManagerScript
     private float flightSpeed;
-    private float timer;
-    public string pORe;
+
     // Start is called before the first frame update
     void Start()
     {
-        timer = 5.0f;
-        flightSpeed = 10.0f;
+        LoadPlaySettings();
+        DetermineColliders();
+        Launch();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    void FixedUpdate()
+    {
+        if (managerScript.gameOn) { Decay(); } else { Destroy(gameObject); }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        string collTag = collision.gameObject.tag;
+        if (collTag == "Enemy" && pORe == "p") { HitEnemy(collision); }
+        if (collTag == "Player" && pORe == "e") { HitPlayer(collision); }
+        if (collTag == "Powerup") { HitPowerup(collision); }
+        if (collTag == "Bullet" && pORe == "p") { IncreaseMultiplier(collision); }
+    }
+
+    private void LoadPlaySettings()
+    {
+        // Game entity settings
         field = GameObject.FindGameObjectWithTag("BulletIgnore");
         player = GameObject.FindGameObjectWithTag("Player");
         enemy = GameObject.FindGameObjectWithTag("Enemy");
         manager = GameObject.FindGameObjectWithTag("GameController");
+        managerScript = manager.GetComponent<ManagerScript>();
 
-        if (manager == null)
-            Debug.LogError("SomeVariable has not been assigned.", this);
+        // Entity settings
+        lifeTimer = 5.0f;
+        flightSpeed = 10.0f;
+    }
 
+    private void DetermineColliders()
+    {
         foreach (Collider2D col in field.GetComponents<Collider2D>())
         {
             Physics2D.IgnoreCollision(col, GetComponent<Collider2D>());
@@ -45,80 +81,51 @@ public class ShotDirection : MonoBehaviour
                 Physics2D.IgnoreCollision(col, GetComponent<Collider2D>());
             }
         }
-
-        Launch();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void HitEnemy(Collision2D collision)
     {
-        
+        managerScript.enemyAlive = false;
+        managerScript.score += 50 * managerScript.scoreMultiplier;
+        managerScript.spawn = collision.transform;
+        managerScript.scoreMultiplier = 1;
+        Destroy(collision.gameObject);
+        Destroy(gameObject);
     }
 
-    void FixedUpdate()
+    private void HitPlayer(Collision2D collision)
     {
+        managerScript.playerAlive = false;
+        Destroy(collision.gameObject);
+        Destroy(gameObject);
+    }
 
-        if (manager.GetComponent<ManagerScript>().gameOn)
-        {
-            timer -= Time.deltaTime;
-            if (timer < 0) { Destroy(gameObject); }
-        }
-        else
-        {
+    private void HitPowerup(Collision2D collision)
+    {
+            if (pORe == "p") { managerScript.scoreMultiplier += 3; }
+            if (pORe == "e") { managerScript.score -= 2; }
+            Destroy(collision.gameObject);
             Destroy(gameObject);
-        }
-
-
     }
 
-    void Launch()
+    private void IncreaseMultiplier(Collision2D collision)
     {
-        Debug.Log($"BUL V[{destination}]");
-        Vector2 direction = new Vector2(destination.x - GetComponent<Rigidbody2D>().position.x, destination.y - GetComponent<Rigidbody2D>().position.y).normalized;
+            managerScript.scoreMultiplier += 1;
+            Destroy(collision.gameObject);
+            Destroy(gameObject);
+    }
+
+    private void Launch()
+    {
+        Vector2 myPos = new(GetComponent<Rigidbody2D>().position.x,
+                            GetComponent<Rigidbody2D>().position.y);
+        Vector2 direction = new Vector2(destination.x - myPos.x, 
+                                        destination.y - myPos.y).normalized;
         GetComponent<Rigidbody2D>().velocity = direction * flightSpeed;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void Decay()
     {
-        Debug.Log("Hit!");
-        Debug.Log($"PORE: {pORe}");
-
-        if (collision.gameObject.CompareTag("Enemy") && pORe == "p")
-        {
-            manager.GetComponent<ManagerScript>().enemyAlive = false;
-            manager.GetComponent<ManagerScript>().score += 50 * manager.GetComponent<ManagerScript>().scoreMultiplier;
-            manager.GetComponent<ManagerScript>().spawn = collision.transform;
-            manager.GetComponent<ManagerScript>().scoreMultiplier = 1;
-            Destroy(collision.gameObject);
-            Destroy(gameObject);
-        }
-
-        if (collision.gameObject.CompareTag("Player") && pORe == "e")
-        {
-            manager.GetComponent<ManagerScript>().playerAlive = false;
-            Destroy(collision.gameObject);
-            Destroy(gameObject);
-        }
-
-        if (collision.gameObject.CompareTag("Bullet") && pORe == "p")
-        {
-            manager.GetComponent<ManagerScript>().scoreMultiplier += 1;
-            Debug.Log($"B-HIT: {manager.GetComponent<ManagerScript>().scoreMultiplier}");
-            Destroy(collision.gameObject);
-            Destroy(gameObject);
-        }
-
-        if (collision.gameObject.CompareTag("Bullet") && pORe == "e")
-        {
-            Debug.Log("OPE");
-        }
-
-        if (collision.gameObject.CompareTag("Powerup"))
-        {
-            if (pORe == "p") { manager.GetComponent<ManagerScript>().scoreMultiplier += 3; }
-            if (pORe == "e") { manager.GetComponent<ManagerScript>().score -= 2; }
-            Destroy(collision.gameObject);
-            Destroy(gameObject);
-        }
+        if (lifeTimer < 0) { Destroy(gameObject); } else { lifeTimer -= Time.deltaTime; }
     }
 }

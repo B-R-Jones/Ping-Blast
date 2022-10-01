@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShotDirection : MonoBehaviour
+public class BulletController : MonoBehaviour
 {
     // Game entities
     private GameObject field;
     private GameObject player;
     private GameObject enemy;
     private GameObject manager;
-    private ManagerScript managerScript;
+    private ManagerController managerController;
 
     // Entity and movement attributes
-    [HideInInspector] public string pORe; // Accessed by PlayerController/FireControl
+    public string pORe; // Accessed by PlayerController/FireControl
     private float lifeTimer;
-    [HideInInspector] public Vector2 destination; // Accessed by PlayerController/ManagerScript
+    public Vector2 destination; // Accessed by PlayerController/ManagerController
     private float flightSpeed;
 
     // Start is called before the first frame update
@@ -33,7 +33,7 @@ public class ShotDirection : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (managerScript.gameOn) { Decay(); } else { Destroy(gameObject); }
+        if (managerController.gameOn) { Decay(); } else { Destroy(gameObject); }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -52,7 +52,7 @@ public class ShotDirection : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         enemy = GameObject.FindGameObjectWithTag("Enemy");
         manager = GameObject.FindGameObjectWithTag("GameController");
-        managerScript = manager.GetComponent<ManagerScript>();
+        managerController = manager.GetComponent<ManagerController>();
 
         // Entity settings
         lifeTimer = 5.0f;
@@ -85,37 +85,37 @@ public class ShotDirection : MonoBehaviour
 
     private void HitEnemy(Collision2D collision)
     {
-        managerScript.enemyAlive = false;
-        managerScript.moveCounter = collision.gameObject.GetComponent<FireControl>().stepCounter;
-        managerScript.score += 50 * managerScript.scoreMultiplier;
-        managerScript.scoreMultiplier = 1;
+        managerController.enemyAlive = false;
+        managerController.moveCounter = collision.gameObject.GetComponent<EnemyController>().stepCounter;
+        managerController.score += 50 * managerController.scoreMultiplier;
+        managerController.scoreMultiplier = 1;
         Destroy(collision.gameObject);
         Destroy(gameObject);
     }
 
     private void HitPlayer(Collision2D collision)
     {
-        managerScript.playerAlive = false;
-        managerScript.moveIndex = collision.gameObject.GetComponent<PlayerController>().stepIndex;
+        managerController.playerAlive = false;
+        managerController.moveIndex = collision.gameObject.GetComponent<PlayerController>().stepIndex;
         Destroy(collision.gameObject);
         Destroy(gameObject);
     }
 
     private void HitPowerup(Collision2D collision)
     {
-            if (pORe == "p") { managerScript.scoreMultiplier += 3; }
-            if (pORe == "e") { managerScript.score -= 2; }
-            Destroy(collision.gameObject);
-            Destroy(gameObject);
+        if (pORe == "p") { managerController.scoreMultiplier += 3; }
+        if (pORe == "e") { managerController.score -= 2; }
+        Destroy(collision.gameObject);
+        Destroy(gameObject);
     }
 
     private void IncreaseMultiplier(Collision2D collision)
     {
-        if (collision.gameObject.GetComponent<ShotDirection>())
+        if (collision.gameObject.GetComponent<BulletController>())
         {
-            if (collision.gameObject.GetComponent<ShotDirection>().pORe == "e")
+            if (collision.gameObject.GetComponent<BulletController>().pORe == "e")
             {
-                managerScript.scoreMultiplier += 1;
+                managerController.scoreMultiplier += 1;
                 Destroy(collision.gameObject);
                 Destroy(gameObject);
             }

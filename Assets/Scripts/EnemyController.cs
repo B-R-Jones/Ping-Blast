@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FireControl : MonoBehaviour
+public class EnemyController : MonoBehaviour
 {
     // Game manager entity, script, and other entities
     private GameObject manager;
-    private ManagerScript managerScript;
+    private ManagerController managerController;
     private GameObject player;
     private Transform powerup;
 
@@ -19,14 +19,14 @@ public class FireControl : MonoBehaviour
     public int stepCounter;
 
     // Weapon attributes and modifiers
-    [HideInInspector] public GameObject shot; // Leave open for easy swapping of shots in dev mode    
+    public GameObject shot; // Leave open for easy swapping of shots in dev mode    
     public float shotTimer; // Accessed by RFManager/SPManager
-    [HideInInspector] public int shotNumber; // Accessed by SPManager
+    public int shotNumber; // Accessed by SPManager
     private float fireChance;
     private float _fireChance;
     private float fireChanceTimer;
-    [HideInInspector] public bool rapidFireOn; // Accessed by RFManager
-    [HideInInspector] public bool spreadShotOn; // Accessed by SPManager
+    public bool rapidFireOn; // Accessed by RFManager
+    public bool spreadShotOn; // Accessed by SPManager
     private float rapidFireTimer;
     private float spreadShotTimer;
 
@@ -44,7 +44,7 @@ public class FireControl : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (manager.GetComponent<ManagerScript>().gameOn && coolDownTimer > 0) 
+        if (manager.GetComponent<ManagerController>().gameOn && coolDownTimer > 0) 
         { 
             coolDownTimer -= Time.deltaTime; 
         }
@@ -59,19 +59,17 @@ public class FireControl : MonoBehaviour
     {
         // Manager and player settings
         manager = GameObject.FindGameObjectWithTag("GameController");
-        managerScript = manager.GetComponent<ManagerScript>();
+        managerController = manager.GetComponent<ManagerController>();
         player = GameObject.FindGameObjectWithTag("Player");
 
         // Entity settings
-        coolDownTimer = 0.5f;
+        coolDownTimer = 0.25f;
 
         // Movement settings
-        moveTimer = Random.Range(0.5f, 3.0f);
+        moveTimer = Random.Range(0.5f, 1.5f);
         
         mySteps = new Dictionary<int, Vector2>();
-        //mySteps = new Dictionary<int, Vector2>();
-        //stepCounter = 0;
-        stepCounter = managerScript.moveIndex;
+        stepCounter = managerController.moveIndex;
         
         // Firing controls
         shotTimer = 1.0f;
@@ -89,7 +87,7 @@ public class FireControl : MonoBehaviour
 
     private void DetectFire()
     {
-        if (managerScript.gameOn && coolDownTimer < 0)
+        if (managerController.gameOn && coolDownTimer < 0)
         {
             _fireChance = Random.Range(0.0f, 100.0f);
             fireChanceTimer -= Time.deltaTime;
@@ -114,7 +112,7 @@ public class FireControl : MonoBehaviour
 
     private void MoveSquareEnemy()
     {
-        mySteps = managerScript.moveList;
+        mySteps = managerController.moveList;
         
         if (mySteps == null) { Debug.Log("STEPS NULL"); return; }
         if (mySteps.ContainsKey(stepCounter) && mySteps.Count >= 1)
@@ -135,6 +133,10 @@ public class FireControl : MonoBehaviour
                 destination = mySteps[stepCounter];
                 transform.position = Vector2.MoveTowards(currentPos, destination, 5 * Time.deltaTime);
             }
+        }
+        else if (stepCounter > managerController.moveIndex)
+        {
+            stepCounter = managerController.moveCounter - 1;
         }
         stepCounter++;
         mySteps.Remove(stepCounter - 1);
@@ -160,8 +162,8 @@ public class FireControl : MonoBehaviour
             if (i == 1) { spawnAt.x += 0.3f; target.x += 0.6f; }
             if (i == 2) { spawnAt.x -= 0.3f; target.x -= 0.6f; }
             var newShot = Instantiate(shot, (transform.position + (0.25f * -1 * transform.up)), Quaternion.identity);
-            newShot.GetComponent<ShotDirection>().destination = target;
-            newShot.GetComponent<ShotDirection>().pORe = "e";
+            newShot.GetComponent<BulletController>().destination = target;
+            newShot.GetComponent<BulletController>().pORe = "e";
         }
     }
 

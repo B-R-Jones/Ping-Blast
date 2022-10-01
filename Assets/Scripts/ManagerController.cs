@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class ManagerScript : MonoBehaviour
+public class ManagerController : MonoBehaviour
 {
     // Enemy state, movement dictionary, steppers, respawn timer and shot
     private GameObject enemy; // Leave open to easily swap out enemies?
     public GameObject enemyToSpawn;
     public bool enemyAlive;
-    [HideInInspector] public Dictionary<int, Vector2> moveList; // Accessed by PlayerController/FireControl
+    public Dictionary<int, Vector2> moveList; // Accessed by PlayerController/FireControl
     public int moveCounter; // Accessed by FireControl
     public int moveIndex; // Accessed by PlayerController/FireControl
     private float respawnEnemyTimer;
@@ -19,17 +19,17 @@ public class ManagerScript : MonoBehaviour
     // Player entity, state, spawn and ghost
     private GameObject player;
     public GameObject playerToSpawn;
-    [HideInInspector] public bool playerAlive;
+    public bool playerAlive;
     private Transform playerSpawn;
 
     // Scoreboard entities and attributes
     public TextMeshPro scoreboard;
     public TextMeshPro multiplierBoard;
     public TextMeshPro nextHitBoard;
-    [HideInInspector] public int score; // Accessed by RFManager/SPManager
-    [HideInInspector] public int scoreMultiplier; // Accessed by RFManager/SPManager
+    public int score; // Accessed by RFManager/SPManager
+    public int scoreMultiplier; // Accessed by RFManager/SPManager
     private int scoreFrames;
-    [HideInInspector] public int lastScore;
+    public int lastScore;
 
     // Powerup entities and spawning numbers and attributes
     public GameObject RapidfirePowerup; // Leave open for easy swapping of powerups in the future

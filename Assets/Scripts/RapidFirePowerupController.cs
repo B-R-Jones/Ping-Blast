@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RFManager : MonoBehaviour
+public class RapidFirePowerupController : MonoBehaviour
 {
     // Entity attributes
     public float lifeTimer;
@@ -36,8 +36,8 @@ public class RFManager : MonoBehaviour
 
             if (collision.gameObject.CompareTag("Enemy"))
             {
-                collision.transform.GetComponent<FireControl>().rapidFireOn = true;
-                collision.transform.GetComponent<FireControl>().shotTimer = 0.25f;
+                collision.transform.GetComponent<EnemyController>().rapidFireOn = true;
+                collision.transform.GetComponent<EnemyController>().shotTimer = 0.25f;
             }
 
             Destroy(gameObject);

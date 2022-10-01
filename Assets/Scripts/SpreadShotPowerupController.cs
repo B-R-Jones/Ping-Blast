@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SPManager : MonoBehaviour
+public class SpreadShotPowerupController : MonoBehaviour
 {
     // Entity attributes
     public float lifeTimer;
@@ -36,8 +36,8 @@ public class SPManager : MonoBehaviour
 
             if (collision.gameObject.CompareTag("Enemy"))
             {
-                collision.transform.GetComponent<FireControl>().spreadShotOn = true;
-                collision.transform.GetComponent<FireControl>().shotNumber = 3;
+                collision.transform.GetComponent<EnemyController>().spreadShotOn = true;
+                collision.transform.GetComponent<EnemyController>().shotNumber = 3;
             }
 
             Destroy(gameObject);

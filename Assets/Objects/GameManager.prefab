@@ -185,7 +185,7 @@ GameObject:
   - component: {fileID: 1649342989}
   m_Layer: 0
   m_Name: Multiplier
-  m_TagString: Untagged
+  m_TagString: Multiplier
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -357,7 +357,7 @@ GameObject:
   - component: {fileID: 2088005605}
   m_Layer: 0
   m_Name: NextHit
-  m_TagString: Untagged
+  m_TagString: NextHit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -525,7 +525,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6819262912181590751}
-  - component: {fileID: 6819262912181590748}
+  - component: {fileID: 6898357042806562079}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameController
@@ -551,7 +551,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6819262912181590748
+--- !u!114 &6898357042806562079
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -563,30 +563,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 703236106dbbb994da14863e114196b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 7572562721612609978, guid: edab44cbfb2cbe64cb024456a20eb70c, type: 3}
-  playerSpawn: {fileID: 7572562721612609981, guid: edab44cbfb2cbe64cb024456a20eb70c, type: 3}
-  enemy: {fileID: 445511627437159506, guid: 30896ccd04387934bbed676214e7eb7a, type: 3}
-  ghost: {fileID: 7913675383711034190, guid: 677d1e60cc7c08840815c77ee0b5531f, type: 3}
-  shot: {fileID: 2070925945577930812, guid: faedbc372d8efee45a420875c2c4a03c, type: 3}
-  spawn: {fileID: 0}
-  stepCount: 0
+  enemyToSpawn: {fileID: 445511627437159506, guid: 30896ccd04387934bbed676214e7eb7a, type: 3}
+  enemyAlive: 0
   moveCounter: 0
   moveIndex: 0
-  enemyAlive: 1
-  respawnEnemyTimer: 0
-  playerAlive: 1
-  score: 0
-  scoreMultiplier: 0
+  respawnEnemySeconds: 0
+  shot: {fileID: 2070925945577930812, guid: faedbc372d8efee45a420875c2c4a03c, type: 3}
+  playerToSpawn: {fileID: 7572562721612609978, guid: edab44cbfb2cbe64cb024456a20eb70c, type: 3}
+  playerAlive: 0
   scoreboard: {fileID: 415877277}
   multiplierBoard: {fileID: 1649342989}
   nextHitBoard: {fileID: 2088005605}
-  spawnPowerupTimer: 0
-  spawnPowerupChance: 0
-  spawnPowerupDetails: 0
-  spawnPowerupLocationX: 0
-  spawnPowerupLocationY: 0
+  score: 0
+  scoreMultiplier: 0
+  lastScore: 0
   RapidfirePowerup: {fileID: 6805359278441248232, guid: 55ebc621d8b5cec49a2e75b45994dcdf, type: 3}
   SpreadshotPowerup: {fileID: 6377078768858339566, guid: 479c4ef3649c90c4ab48b82c954a12d1, type: 3}
-  gameOn: 0
-  moveCamera: 0
   mainCamera: {fileID: 0}
+  gameOn: 0

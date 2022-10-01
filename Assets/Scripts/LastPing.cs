@@ -23,6 +23,6 @@ public class LastPing : MonoBehaviour
 
     private void FixedUpdate()
     {
-        myText.text = "LAST PING: " + manager.GetComponent<ManagerScript>().lastScore;
+        myText.text = "LAST PING: " + manager.GetComponent<ManagerController>().lastScore;
     }
 }

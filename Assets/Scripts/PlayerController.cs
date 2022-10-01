@@ -15,8 +15,9 @@ public class PlayerController : MonoBehaviour
 
     // Other game entities
     private GameObject manager;
-    private ManagerScript managerScript;
-    [HideInInspector] public Rigidbody2D ghost; // Accessed by ManagerScript
+    //private ManagerScript managerScript;
+    private ManagerController managerController;
+    public Rigidbody2D ghost; // Accessed by ManagerController
 
     // Vector positions of the ghost
     private Vector2 ghostPos;
@@ -28,10 +29,10 @@ public class PlayerController : MonoBehaviour
 
     // Weapon attributes and modifiers
     public GameObject shot; // Leave open for easy swapping of shots in dev mode
-    [HideInInspector] public int shotNumber; // Accessed by SPManager
-    [HideInInspector] public float shotTimer; // Accessed by RFManager
-    [HideInInspector] public bool rapidFireOn; // Accessed by RFManager
-    [HideInInspector] public bool spreadShotOn; // Accessed by SPManager
+    public int shotNumber; // Accessed by SPManager
+    public float shotTimer; // Accessed by RFManager
+    public bool rapidFireOn; // Accessed by RFManager
+    public bool spreadShotOn; // Accessed by SPManager
     private float rapidFireTimer;
     private float spreadShotTimer;
 
@@ -44,7 +45,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (managerScript.gameOn)
+        if (managerController.gameOn)
         {
             SetPositions();
             MoveSquare();
@@ -58,7 +59,7 @@ public class PlayerController : MonoBehaviour
     {
         // Manager settings
         manager = GameObject.FindGameObjectWithTag("GameController");
-        managerScript = manager.GetComponent<ManagerScript>();
+        managerController = manager.GetComponent<ManagerController>();
 
         // Player settings
         myRigidbody = GetComponent<Rigidbody2D>();
@@ -68,9 +69,9 @@ public class PlayerController : MonoBehaviour
         ghost = GameObject.FindGameObjectWithTag("Ghost").gameObject.GetComponent<Rigidbody2D>();
 
         //Enemy movement list
-        enemySteps = managerScript.moveList;
+        enemySteps = managerController.moveList;
         enemySteps = new Dictionary<int, Vector2>();
-        stepIndex = managerScript.moveIndex;
+        stepIndex = managerController.moveIndex;
 
         // Powerup and firing settings
         rapidFireOn = false;
@@ -161,9 +162,9 @@ public class PlayerController : MonoBehaviour
                 GameObject newShot = Instantiate(shot,
                                                  transform.position + (transform.up * 0.25f),
                                                  Quaternion.identity);
-                ShotDirection sDir = newShot.GetComponent<ShotDirection>();
-                sDir.destination = target;
-                sDir.pORe = "p";
+                BulletController bCon = newShot.GetComponent<BulletController>();
+                bCon.destination = target;
+                bCon.pORe = "p";
             }
             if (rapidFireOn) { shotTimer = 0.25f; } else { shotTimer = 1.0f; }
         }
@@ -180,8 +181,8 @@ public class PlayerController : MonoBehaviour
 
         if (newGhostPos == null) { Debug.Log("navi"); }
         enemySteps.Add(stepIndex, newGhostPos);
-        managerScript.moveList = enemySteps;
-        managerScript.moveIndex = stepIndex;
+        managerController.moveList = enemySteps;
+        managerController.moveIndex = stepIndex;
         stepIndex++;
     }
 }

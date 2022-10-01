@@ -9,6 +9,9 @@ TagManager:
   - Enemy
   - Bullet
   - Powerup
+  - Scoreboard
+  - Multiplier
+  - NextHit
   layers:
   - Default
   - TransparentFX
